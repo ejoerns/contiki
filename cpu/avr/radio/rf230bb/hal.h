@@ -510,5 +510,19 @@ void hal_sram_write( uint8_t address, uint8_t length, uint8_t *data );
 #endif
 
 #endif
+
+
+/**
+ * Fast memory access method for RF-231 crypto functionality
+ * 
+ * op1      - instruction byte to pass on to AES hardware
+ * data_in  - data received during transfer (read from chip)
+ * data_out - data to send to chip
+ *
+ * NOTE: Bases on hal_sram_read(..) and hal_sram_write(..)
+ * TODO: MOVE TO OWN FILE (RF231)
+ */
+void hal_sram_fast(uint8_t op1, uint8_t *data_in, uint8_t *data_out);
+
 /** @} */
 /*EOF*/

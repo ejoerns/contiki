@@ -685,7 +685,7 @@ hal_frame_write(uint8_t *write_buffer, uint8_t length)
  * \param length Length of the read burst
  * \param data Pointer to buffer where data is stored.
  */
-#if 0  //Uses 80 bytes (on Raven) omit unless needed
+#if 1  //Uses 80 bytes (on Raven) omit unless needed
 void
 hal_sram_read(uint8_t address, uint8_t length, uint8_t *data)
 {
@@ -708,6 +708,28 @@ hal_sram_read(uint8_t address, uint8_t length, uint8_t *data)
     HAL_SPI_TRANSFER_CLOSE();
 }
 #endif
+/**
+ * TODO: MOVE TO OWN FILE (RF231)
+ */
+void hal_sram_fast(uint8_t op1, uint8_t *data_in, uint8_t *data_out){
+  uint8_t length=16;							            // set amount of databytes to send
+  HAL_SPI_TRANSFER_OPEN();						            // begin SPI transfer
+  HAL_SPI_TRANSFER(0x40);						            // send SPI SRAM write access request
+  HAL_SPI_TRANSFER(0x83);						            // send @address 0x83
+  HAL_SPI_TRANSFER(op1);						            // send opcode for AES HW
+  do{									                    // do ->
+    if (length==16){							            //   - if first byte
+      HAL_SPI_TRANSFER(*data_out++);			            //     - send data byte without receiving
+    }else{								                    //   - else (all other bytes)
+      *data_in++= HAL_SPI_TRANSFER(*data_out++);			//     - send data byte while receiving incoming data byte
+    }									                    //   
+  }while(--length>0);							            // -> until all bytes were sent
+  if ((op1&16)==16){							            // if opcode send to AES HW was a key set request: we are done
+  }else{								                    // else (not a key set request)
+    *data_in++= HAL_SPI_TRANSFER(128);                      //   - push 'go' signal to chip and receive one last byte
+  }                                                         // 
+  HAL_SPI_TRANSFER_CLOSE();	                                // stop SPI transfer
+}
 /*----------------------------------------------------------------------------*/
 /** \brief Write SRAM
  *

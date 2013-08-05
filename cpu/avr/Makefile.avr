@@ -26,6 +26,15 @@ CONTIKI_TARGET_SOURCEFILES  += $(USB)
 endif
 
 
+### Define AES type to compile and set path
+ifndef AES
+  AES=0
+endif
+ifdef AES
+  CONTIKI_CPU_DIRS          += aes
+  CONTIKI_TARGET_SOURCEFILES += aes.c
+endif
+
 CONTIKI_TARGET_SOURCEFILES += $(AVR) $(SENSORS) \
                               $(SYSAPPS) $(ELFLOADER) \
                               $(TARGETLIBS) $(PROFILE)
