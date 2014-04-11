@@ -129,6 +129,7 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
       }
       server = new ServerSocket(LISTEN_PORT);
       new Thread() {
+        @Override
         public void run() {
           while (server != null) {
             try {
@@ -157,6 +158,7 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
 
     /* Observe serial port for outgoing data */
     serialPort.addSerialDataObserver(serialDataObserver = new Observer() {
+      @Override
       public void update(Observable obs, Object obj) {
         try {
           if (out == null) {
@@ -183,6 +185,7 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
   private void startSocketReadThread(final DataInputStream in) {
     /* Forward data: virtual port -> mote */
     Thread incomingDataThread = new Thread(new Runnable() {
+      @Override
       public void run() {
         int numRead = 0;
         byte[] data = new byte[1024];
@@ -223,10 +226,12 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
     return label;
   }
 
+  @Override
   public boolean setConfigXML(Collection<Element> configXML, boolean visAvailable) {
     return true;
   }
 
+  @Override
   public Collection<Element> getConfigXML() {
     return null;
   }
@@ -256,6 +261,7 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
 
     if (Cooja.isVisualized()) {
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           statusLabel.setText("Listening on port: " + LISTEN_PORT);
         }
@@ -264,6 +270,7 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
   }
 
   private boolean closed = false;
+  @Override
   public void closePlugin() {
 	  closed = true;
     cleanupClient();
@@ -274,12 +281,14 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
     }
   }
 
+  @Override
   public Mote getMote() {
     return mote;
   }
 
   private static final int UPDATE_INTERVAL = 150;
   private Timer updateTimer = new Timer(UPDATE_INTERVAL, new ActionListener() {
+    @Override
 	  public void actionPerformed(ActionEvent e) {
 		  if (closed) {
 			  updateTimer.stop();
