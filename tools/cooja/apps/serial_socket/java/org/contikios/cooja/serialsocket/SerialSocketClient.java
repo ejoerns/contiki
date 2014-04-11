@@ -1,3 +1,5 @@
+package org.contikios.cooja.serialsocket;
+
 /*
  * Copyright (c) 2010, Swedish Institute of Computer Science.
  * All rights reserved.
@@ -30,12 +32,9 @@
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.Observable;
@@ -48,7 +47,6 @@ import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
@@ -63,20 +61,21 @@ import org.contikios.cooja.VisPlugin;
 import org.contikios.cooja.interfaces.SerialPort;
 
 /**
- * Socket to simulated serial port forwarder. Server version.
+ * Socket to simulated serial port forwarder. Client version.
  * 
  * @author Fredrik Osterlind
  */
-@ClassDescription("Serial Socket (SERVER)")
+@ClassDescription("Serial Socket (CLIENT)")
 @PluginType(PluginType.MOTE_PLUGIN)
-public class SerialSocketServer extends VisPlugin implements MotePlugin {
+public class SerialSocketClient extends VisPlugin implements MotePlugin {
   private static final long serialVersionUID = 1L;
-  private static Logger logger = Logger.getLogger(SerialSocketServer.class);
+  private static Logger logger = Logger.getLogger(SerialSocketClient.class);
 
   private final static int LABEL_WIDTH = 100;
   private final static int LABEL_HEIGHT = 15;
 
-  public final int LISTEN_PORT;
+  public final static String SERVER_HOST = "localhost";
+  public final static int SERVER_PORT = 1234;
 
   private SerialPort serialPort;
   private Observer serialDataObserver;
@@ -84,20 +83,15 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
   private JLabel statusLabel, inLabel, outLabel;
   private int inBytes = 0, outBytes = 0;
 
-  private ServerSocket server;
-  private Socket client;
+  private Socket socket;
   private DataInputStream in;
   private DataOutputStream out;
 
   private Mote mote;
 
-  public SerialSocketServer(Mote mote, Simulation simulation, final Cooja gui) {
-    super("Serial Socket (SERVER) (" + mote + ")", gui, false);
+  public SerialSocketClient(Mote mote, Simulation simulation, final Cooja gui) {
+    super("Serial Socket (CLIENT) (" + mote + ")", gui, false);
     this.mote = mote;
-
-    updateTimer.start();
-
-    LISTEN_PORT = 60000 + mote.getID();
 
     /* GUI components */
     if (Cooja.isVisualized()) {
@@ -121,33 +115,12 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
     }
 
     try {
-      logger.info("Listening on port: " + LISTEN_PORT);
-      if (Cooja.isVisualized()) {
-        statusLabel.setText("Listening on port: " + LISTEN_PORT);
-      }
-      server = new ServerSocket(LISTEN_PORT);
-      new Thread() {
-        public void run() {
-          while (server != null) {
-            try {
-              client = server.accept();
-              in = new DataInputStream(client.getInputStream());
-              out = new DataOutputStream(client.getOutputStream());
-              out.flush();
-
-              startSocketReadThread(in);
-              if (Cooja.isVisualized()) {
-                statusLabel.setText("Client connected: " + client.getInetAddress());
-              }
-            } catch (IOException e) {
-              logger.fatal("Listening thread shut down: " + e.getMessage());
-              server = null;
-              cleanupClient();
-              break;
-            }
-          }
-        }
-      }.start();
+      logger.info("Connecting: " + SERVER_HOST + ":" + SERVER_PORT);
+      socket = new Socket(SERVER_HOST, SERVER_PORT);
+      in = new DataInputStream(socket.getInputStream());
+      out = new DataOutputStream(socket.getOutputStream());
+      out.flush();
+      startSocketReadThread(in);
     } catch (Exception e) {
       throw (RuntimeException) new RuntimeException(
           "Connection error: " + e.getMessage()).initCause(e);
@@ -158,16 +131,16 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
       public void update(Observable obs, Object obj) {
         try {
           if (out == null) {
-            /*logger.debug("out is null");*/
             return;
           }
-          
           out.write(serialPort.getLastSerialData());
           out.flush();
-          
           outBytes++;
+          if (Cooja.isVisualized()) {
+            outLabel.setText(outBytes + " bytes");
+          }
         } catch (IOException e) {
-          cleanupClient();
+          e.printStackTrace();
         }
       }
     });
@@ -190,17 +163,21 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
           try {
             numRead = in.read(data);
           } catch (IOException e) {
-            numRead = -1;
+            e.printStackTrace();
+            return;
           }
 
           if (numRead >= 0) {
             for (int i=0; i < numRead; i++) {
               serialPort.writeByte(data[i]);
             }
-
             inBytes += numRead;
+            if (Cooja.isVisualized()) {
+              inLabel.setText(inBytes + " bytes");
+            }
           } else {
-            cleanupClient();
+            logger.warn("Incoming data thread shut down");
+            cleanup();
             break;
           }
         }
@@ -229,11 +206,13 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
     return null;
   }
 
-  private void cleanupClient() {
+  private void cleanup() {
+    serialPort.deleteSerialDataObserver(serialDataObserver);
+
     try {
-      if (client != null) {
-        client.close();
-        client = null;
+      if (socket != null) {
+        socket.close();
+        socket = null;
       }
     } catch (IOException e1) {
     }
@@ -252,41 +231,20 @@ public class SerialSocketServer extends VisPlugin implements MotePlugin {
     } catch (IOException e) {
     }
 
-    if (Cooja.isVisualized()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          statusLabel.setText("Listening on port: " + LISTEN_PORT);
-        }
-      });
-    }
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        SerialSocketClient.this.setTitle(SerialSocketClient.this.getTitle() + " *DISCONNECTED*");
+        statusLabel.setText("Disconnected from server");
+      }
+    });
   }
 
-  private boolean closed = false;
   public void closePlugin() {
-	  closed = true;
-    cleanupClient();
-    serialPort.deleteSerialDataObserver(serialDataObserver);
-    try {
-      server.close();
-    } catch (IOException e) {
-    }
+    cleanup();
   }
 
   public Mote getMote() {
     return mote;
   }
-
-  private static final int UPDATE_INTERVAL = 150;
-  private Timer updateTimer = new Timer(UPDATE_INTERVAL, new ActionListener() {
-	  public void actionPerformed(ActionEvent e) {
-		  if (closed) {
-			  updateTimer.stop();
-			  return;
-		  }
-		  
-		  inLabel.setText(inBytes + " bytes");
-		  outLabel.setText(outBytes + " bytes");
-	  }
-  });
 }
 
