@@ -128,6 +128,8 @@ public abstract class AbstractCompileDialog extends JDialog {
   public File contikiSource = null;
   public File contikiFirmware = null;
 
+  private DialogState dialogState;
+
   public AbstractCompileDialog(Container parent, Simulation simulation, final MoteType moteType) {
     super(
         parent instanceof Dialog?(Dialog)parent:
@@ -599,6 +601,7 @@ public abstract class AbstractCompileDialog extends JDialog {
    * @param dialogState New dialog state
    */
   protected void setDialogState(DialogState dialogState) {
+    this.dialogState = dialogState;
     File sourceFile = new File(contikiField.getText());
     compileButton.setText("Compile");
     getRootPane().setDefaultButton(compileButton);
@@ -694,13 +697,19 @@ public abstract class AbstractCompileDialog extends JDialog {
     commandsArea = new JTextArea(10, 1);
     commandsArea.getDocument().addDocumentListener(new DocumentListener() {
       public void changedUpdate(DocumentEvent e) {
-        setDialogState(DialogState.AWAITING_COMPILATION);
+        if (dialogState != DialogState.SELECTED_FIRMWARE) {
+          setDialogState(DialogState.AWAITING_COMPILATION);
+        }
       }
       public void insertUpdate(DocumentEvent e) {
-        setDialogState(DialogState.AWAITING_COMPILATION);
+        if (dialogState != DialogState.SELECTED_FIRMWARE) {
+          setDialogState(DialogState.AWAITING_COMPILATION);
+        }
       }
       public void removeUpdate(DocumentEvent e) {
-        setDialogState(DialogState.AWAITING_COMPILATION);
+        if (dialogState != DialogState.SELECTED_FIRMWARE) {
+          setDialogState(DialogState.AWAITING_COMPILATION);
+        }
       }
     });
     parent.addTab("Compile commands", null, new JScrollPane(commandsArea), "Manually alter Contiki compilation commands");
