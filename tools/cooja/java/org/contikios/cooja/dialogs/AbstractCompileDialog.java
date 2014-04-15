@@ -270,12 +270,18 @@ public abstract class AbstractCompileDialog extends JDialog {
     		if (!compileButton.isEnabled()) {
     			return;
     		}
-    		try {
-    			setDialogState(DialogState.AWAITING_COMPILATION);
-    			compileContiki();
-    		} catch (Exception e1) {
-    			logger.fatal("Error while compiling Contiki: " + e1.getMessage());
-    		}
+        if (e.getActionCommand().equals("Compile")) {
+          // compile
+          try {
+            setDialogState(DialogState.AWAITING_COMPILATION);
+            compileContiki();
+          } catch (Exception e1) {
+            logger.fatal("Error while compiling Contiki: " + e1.getMessage());
+          }
+        } else {
+          // Abort
+          abortAnyCompilation();
+        }
     	}
     };
     cleanButton = new JButton("Clean");
@@ -654,8 +660,7 @@ public abstract class AbstractCompileDialog extends JDialog {
 
     case IS_COMPILING:
     	cleanButton.setEnabled(false);
-    	compileButton.setEnabled(false);
-    	compileButton.setText("Compiling");
+    	compileButton.setText("Abort");
     	createButton.setEnabled(false);
     	commandsArea.setEnabled(false);
       break;
