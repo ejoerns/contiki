@@ -26,44 +26,77 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
 package org.contikios.cooja.interfaces.sensor;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
- * Interface every sensor implementation has to provide
- * to use it in Cooja.
  *
- * @author Enrico Jorns
+ * @author Enrico Joerns
  */
-public interface SensorAdapter {
+public class Channel {
+  public String name;
+  public String unit;
+  public Sensor.DataModel model;
+  public double default_ = 0.0;
+  private AbstractSensorFeeder feeder = null;
+  private AbstractSensorFeeder.FeederParameter param = null;
 
-  /**
-   * Returns all channels of this sensor.
-   *
-   * @return
-   */
-  Channel[] getChannels();
+  public Channel(String name, String unit, Sensor.DataModel model) {
+    this.name = name;
+    this.unit = unit;
+    this.model = model;
+  }
 
-  /**
-   * Returns name of Sensor.
-   *
-   * @return
-   */
-  String getName();
+  public Channel(String name) {
+    this(name, null, new Sensor.EmptyDataModel());
+  }
 
-  /**
-   * Get value from sensor channel.
-   *
-   * @param channel Channel to get value from.
-   * @return Read value
-   */
-  double getValue(int channel);
+  public Sensor.DataModel getDataModel() {
+    return model;
+  }
 
-  /**
-   * Set value for sensor channel.
-   *
-   * @param channel Channel to set value for.
-   * @param value Value to set
-   */
-  void setValue(int channel, double value);
+  /* to be set by the feeder */
+  public void setFeeder(AbstractSensorFeeder feeder, AbstractSensorFeeder.FeederParameter param) {
+    this.feeder = feeder;
+    this.param = param;
+    notifyFeederUpdate();
+  }
 
+  public AbstractSensorFeeder getFeeder() {
+    return this.feeder;
+  }
+
+  public AbstractSensorFeeder.FeederParameter getFeederParameter() {
+    return param;
+  }
+
+  private final List<Listener> listeners = new LinkedList<>();
+
+  private void notifyFeederUpdate() {
+    for (Listener l : listeners) {
+      System.out.println(l);
+      l.onFeederUpdated();
+    }
+  }
+
+  public void addChannelListener(Listener l) {
+    if (!listeners.contains(l)) {
+      listeners.add(l);
+    }
+  }
+
+  public void removeChannelListener(Listener l) {
+    if (listeners.contains(l)) {
+      listeners.remove(l);
+    }
+  }
+
+  public static interface Listener {
+
+    void onFeederUpdated();
+  }
+  
 }

@@ -67,10 +67,9 @@ public class RandomSensorFeederVisualizer extends AbstractSensorFeederVisualizer
     content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
     /* Add channel inputs */
     final List<AbstractChannelPanel> cpList = new LinkedList<>();
-    for (Sensor.Channel ch : sensor.getChannels()) {
+    for (Channel ch : sensor.getChannels()) {
       AbstractChannelPanel cp = new RandomChannelPanel(ch);
       cp.setAlignmentX(RIGHT_ALIGNMENT);
-      cp.setup();
       cpList.add(cp);
       content.add(cp);
     }
@@ -95,7 +94,6 @@ public class RandomSensorFeederVisualizer extends AbstractSensorFeederVisualizer
           }
           feeder.setInterval(timingPanel.getInterval());
           feeder.commit();
-          setFeederChanged(); // XXX new!
         }
         catch (ParseException ex) {
           logger.error("Failed parsing RandomSensorFeeder input: " + ex.getMessage());
@@ -127,24 +125,26 @@ public class RandomSensorFeederVisualizer extends AbstractSensorFeederVisualizer
     private final JFormattedTextField uboundInput;
     private final NumberFormat nf;
 
-    public RandomChannelPanel(Sensor.Channel ch) {
+    public RandomChannelPanel(Channel ch) {
       super(RandomSensorFeeder.class, ch);
-      getPanel().setLayout(new BoxLayout(getPanel(), BoxLayout.LINE_AXIS));
+      JPanel panel = new JPanel();
+      panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
       nf = DecimalFormat.getNumberInstance();
       nf.setGroupingUsed(false);
 
-      getPanel().add(new JLabel("Bounds ["));
+      panel.add(new JLabel("Bounds ["));
       lboundInput = new JFormattedTextField(nf);
       lboundInput.setText("0");
       lboundInput.setColumns(8);
-      getPanel().add(lboundInput);
+      panel.add(lboundInput);
 
-      getPanel().add(new JLabel(" - "));
+      panel.add(new JLabel(" - "));
       uboundInput = new JFormattedTextField(nf);
       uboundInput.setText("0");
       uboundInput.setColumns(8);
-      getPanel().add(uboundInput);
-      getPanel().add(new JLabel("]"));
+      panel.add(uboundInput);
+      panel.add(new JLabel("]"));
+      setContentPanel(panel);
 
       /* verify that lbound <= ubound */
       InputVerifier leqVerifier = new InputVerifier() {
@@ -166,10 +166,6 @@ public class RandomSensorFeederVisualizer extends AbstractSensorFeederVisualizer
       lboundInput.setInputVerifier(leqVerifier);
       uboundInput.setInputVerifier(leqVerifier);
 
-      /* Disable panel if channel is already allocated to another feeder type */
-//      if (ch.getFeeder() != null && !ch.getFeeder().getClass().isAssignableFrom(RandomSensorFeeder.class)) {
-//        setPanelEnabled(false);
-//      }
     }
 
     // XXX to interface
@@ -179,6 +175,13 @@ public class RandomSensorFeederVisualizer extends AbstractSensorFeederVisualizer
               nf.parse(lboundInput.getText()).doubleValue(),
               nf.parse(uboundInput.getText()).doubleValue()
       );
+    }
+
+    @Override
+    void updateContent(AbstractSensorFeeder.FeederParameter param) {
+      RandomFeederParameter rfparam = (RandomFeederParameter) param;
+      lboundInput.setText(String.valueOf(rfparam.lbound));
+      uboundInput.setText(String.valueOf(rfparam.ubound));
     }
   }
 

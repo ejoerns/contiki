@@ -67,10 +67,9 @@ public class ManualSensorFeederVisualizer extends AbstractSensorFeederVisualizer
     content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
     /* Add channel inputs */
     final List<ManualChannelPanel> tcpList = new LinkedList<>();
-    for (Sensor.Channel ch : sensor.getChannels()) {
+    for (Channel ch : sensor.getChannels()) {
       ManualChannelPanel tcp = new ManualChannelPanel(ch);
       tcp.setAlignmentX(RIGHT_ALIGNMENT);
-      tcp.setup();
       content.add(tcp);
       tcpList.add(tcp);
     }
@@ -91,7 +90,6 @@ public class ManualSensorFeederVisualizer extends AbstractSensorFeederVisualizer
             feeder.setupForChannel(idx, tcpList.get(idx).toParameter());
           }
           feeder.commit();
-          setFeederChanged(); // XXX new!
         }
         catch (ParseException ex) {
           logger.error("Failed parsing ManualSensorFeeder input: " + ex.getMessage());
@@ -119,21 +117,31 @@ public class ManualSensorFeederVisualizer extends AbstractSensorFeederVisualizer
     private final JTextField channelInput;
     private final NumberFormat nf;
 
-    public ManualChannelPanel(Sensor.Channel ch) {
+    public ManualChannelPanel(Channel ch) {
       super(ManualSensorFeeder.class, ch);
-      getPanel().setLayout(new BorderLayout(10, 0));
-      getPanel().add(BorderLayout.WEST, new JLabel("Value"));
+      
+      JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout(10, 0));
+      panel.add(BorderLayout.WEST, new JLabel("Value"));
       nf = DecimalFormat.getNumberInstance();
       channelInput = new JFormattedTextField(nf);
       channelInput.setText(String.valueOf(ch.default_));
       channelInput.setColumns(10);
-      getPanel().add(BorderLayout.CENTER, channelInput);
+      panel.add(BorderLayout.CENTER, channelInput);
+      
+      setContentPanel(panel);
 
     }
 
     @Override
     public AbstractSensorFeeder.FeederParameter toParameter() throws ParseException {
       return new ManualFeederParameter(nf.parse(channelInput.getText()).doubleValue());
+    }
+
+    @Override
+    void updateContent(AbstractSensorFeeder.FeederParameter param) {
+      ManualFeederParameter mfparam = (ManualFeederParameter) param;
+      channelInput.setText(String.valueOf(mfparam.value));
     }
   }
 

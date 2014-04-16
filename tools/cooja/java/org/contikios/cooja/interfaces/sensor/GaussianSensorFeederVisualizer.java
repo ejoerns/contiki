@@ -46,6 +46,7 @@ import org.contikios.cooja.ClassDescription;
 import org.contikios.cooja.Cooja;
 import org.contikios.cooja.HasQuickHelp;
 import org.contikios.cooja.interfaces.SensorInterface;
+import org.contikios.cooja.interfaces.sensor.GaussianSensorFeeder.GaussianFeederParameter;
 
 /**
  * Sensor feeder visualizer for random values.
@@ -65,10 +66,9 @@ public class GaussianSensorFeederVisualizer extends AbstractSensorFeederVisualiz
     content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
     /* Add channel inputs */
     final List<GaussianChannelPanel> gcpList = new LinkedList<>();
-    for (Sensor.Channel ch : sensor.getChannels()) {
+    for (Channel ch : sensor.getChannels()) {
       GaussianChannelPanel gcp = new GaussianChannelPanel(ch);
       gcp.setAlignmentX(RIGHT_ALIGNMENT);
-      gcp.setup();
       gcpList.add(gcp);
       content.add(gcp);
     }
@@ -93,7 +93,6 @@ public class GaussianSensorFeederVisualizer extends AbstractSensorFeederVisualiz
           }
           feeder.setInterval(timingPanel.getInterval());
           feeder.commit();
-          setFeederChanged(); // XXX new!
         }
         catch (ParseException ex) {
           logger.error("Failed parsing GaussianSensorFeeder input: " + ex.getMessage());
@@ -125,23 +124,25 @@ public class GaussianSensorFeederVisualizer extends AbstractSensorFeederVisualiz
     JTextField devInput;
     NumberFormat nf;
 
-    public GaussianChannelPanel(Sensor.Channel ch) {
+    public GaussianChannelPanel(Channel ch) {
       super(GaussianSensorFeeder.class, ch);
-      getPanel().setLayout(new BoxLayout(getPanel(), BoxLayout.LINE_AXIS));
+      JPanel panel = new JPanel();
+      panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
       nf = DecimalFormat.getNumberInstance();
       nf.setGroupingUsed(false);
 
-      getPanel().add(new JLabel("Mean"));
+      panel.add(new JLabel("Mean"));
       meanInput = new JFormattedTextField(nf);
       meanInput.setText(String.valueOf(ch.default_));
       meanInput.setColumns(8);
-      getPanel().add(meanInput);
+      panel.add(meanInput);
 
-      getPanel().add(new JLabel("Std dev."));
+      panel.add(new JLabel("Std dev."));
       devInput = new JFormattedTextField(nf);
       devInput.setText("1.0");
       devInput.setColumns(8);
-      getPanel().add(devInput);
+      panel.add(devInput);
+      setContentPanel(panel);
 
     }
 
@@ -150,6 +151,13 @@ public class GaussianSensorFeederVisualizer extends AbstractSensorFeederVisualiz
       return new GaussianSensorFeeder.GaussianFeederParameter(
               nf.parse(meanInput.getText()).doubleValue(),
               nf.parse(devInput.getText()).doubleValue());
+    }
+
+    @Override
+    void updateContent(AbstractSensorFeeder.FeederParameter param) {
+      GaussianFeederParameter gfparam = (GaussianFeederParameter) param;
+      meanInput.setText(String.valueOf(gfparam.mean));
+      devInput.setText(String.valueOf(gfparam.deviation));
     }
   }
 

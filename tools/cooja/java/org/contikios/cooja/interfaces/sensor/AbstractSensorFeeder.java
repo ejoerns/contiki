@@ -42,14 +42,11 @@ public abstract class AbstractSensorFeeder implements XMLExportable {
 
   // sensor this feeder is registered for
   private final Sensor sensor;
-  // feeder parameters for the different sensors channels
-  private final FeederParameter[] params;
   // if this feeder is enabled for a sensor channel
   private final boolean[] enabled;
 
   public AbstractSensorFeeder(Sensor sensor) {
     this.sensor = sensor;
-    this.params = new FeederParameter[this.sensor.numChannels()];
     this.enabled = new boolean[this.sensor.numChannels()];
   }
 
@@ -96,7 +93,7 @@ public abstract class AbstractSensorFeeder implements XMLExportable {
     if (!enabled[channel]) {
       return null;
     }
-    return params[channel];
+    return sensor.getChannel(channel).getFeederParameter();
   }
 
   /**
@@ -121,8 +118,7 @@ public abstract class AbstractSensorFeeder implements XMLExportable {
       sensor.getChannel(channel).getFeeder().releaseFromChannel(channel);
     }
     /* We register ourselve at the sensor */
-    sensor.getChannel(channel).setFeeder(this); // XXX we may do this in commit...
-    params[channel] = param;
+    sensor.getChannel(channel).setFeeder(this, param); // XXX we may do this in commit...
     enabled[channel] = true;
   }
 
@@ -136,7 +132,6 @@ public abstract class AbstractSensorFeeder implements XMLExportable {
    */
   public final void releaseFromChannel(int channel) {
     logger.info("Release feeder '" + getName() + "' from channel " + channel);
-    sensor.getChannel(channel).setFeeder(null);
     enabled[channel] = false;
     /* if any enabled, return */
     for (boolean en : enabled) {
@@ -152,9 +147,9 @@ public abstract class AbstractSensorFeeder implements XMLExportable {
    * Releses this feder from all channels and deactivates it.
    */
   public void releaseAll() {
-    for (Sensor.Channel ch : sensor.getChannels()) {
+    for (Channel ch : sensor.getChannels()) {
       if (ch.getFeeder().equals(this)) {
-        ch.setFeeder(null);
+        ch.setFeeder(null, null);
       }
     }
     deactivate();
@@ -215,5 +210,5 @@ public abstract class AbstractSensorFeeder implements XMLExportable {
   public interface FeederParameter extends XMLExportable {
 
   }
-
+  
 }

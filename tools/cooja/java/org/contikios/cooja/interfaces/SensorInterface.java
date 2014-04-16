@@ -69,7 +69,7 @@ import org.contikios.cooja.interfaces.sensor.FileSensorFeederVisualizer;
 import org.contikios.cooja.interfaces.sensor.GaussianSensorFeederVisualizer;
 import org.contikios.cooja.interfaces.sensor.ManualSensorFeederVisualizer;
 import org.contikios.cooja.interfaces.sensor.RandomSensorFeederVisualizer;
-import org.contikios.cooja.interfaces.sensor.Sensor.Channel;
+import org.contikios.cooja.interfaces.sensor.Channel;
 import org.jdom.Element;
 
 /**
@@ -115,8 +115,6 @@ public class SensorInterface extends MoteInterface implements HasQuickHelp {
     Sensor[] sensors = sensormote.getSensors();
     /* Create a SensorPanel for each sensor found on this mote */
     for (Sensor sensor : sensors) {
-
-      System.out.println("((Mote) sensormote).getSimulation().getCooja().getDesktopPane(): " + ((Mote) sensormote).getSimulation().getCooja().getDesktopPane());
 
       SensorPanel sensorPanel = new SensorPanel(((Mote) sensormote).getSimulation().getCooja(), sensor);
       sensorPanels.put(sensor.getName(), sensorPanel);
@@ -322,14 +320,24 @@ public class SensorInterface extends MoteInterface implements HasQuickHelp {
       sfeedConfFrame = new SensorFeederConfigFrame(gui, sensor);
       gui.getDesktopPane().add(sfeedConfFrame);
       sfeedConfFrame.pack();
-      /* Update feeder description if notified about feeder change */
-      sfeedConfFrame.addFeederChangedListener(new Observer() {
+
+      sensor.addSensorListener(new Sensor.SensorListener() {
 
         @Override
-        public void update(Observable o, Object arg) {
+        public void onFeederUpdated(Channel ch) {
           setFeederDescription();
         }
+
+        @Override
+        public void onDataUpdated(Channel ch) {
+        }
+
+        @Override
+        public void onModelViolation(Channel ch) {
+        }
       });
+
+
       
       configureButton.addActionListener(new ActionListener() {
 
@@ -393,8 +401,6 @@ public class SensorInterface extends MoteInterface implements HasQuickHelp {
     private final JComboBox feederSelector;
     /* This panel holds the currently selected AbstractSensorFeederVisualizer */
     private final JPanel visualizerRootPane;
-    private final Observer visualizerChangedFeederObserver;
-    private final FeederUpdateObservable updateObservable = new FeederUpdateObservable();
     private final Cooja gui;
     private AbstractSensorFeederVisualizer currentVisualizer = null;
 
@@ -402,13 +408,6 @@ public class SensorInterface extends MoteInterface implements HasQuickHelp {
     public SensorFeederConfigFrame(final Cooja gui, Sensor sensor) {
       this.gui = gui;
       this.sensor = sensor;
-
-      visualizerChangedFeederObserver = new Observer() {
-
-        @Override
-        public void update(Observable o, Object arg) {
-        }
-      };
 
       final JPanel panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -446,9 +445,8 @@ public class SensorInterface extends MoteInterface implements HasQuickHelp {
         }
 
       });
-
+      
       pack();
-      System.out.println("Created myself: " + this.hashCode());
     }
 
     /**
@@ -485,22 +483,6 @@ public class SensorInterface extends MoteInterface implements HasQuickHelp {
       return currentVisualizer;
     }
 
-    /**
-     * Adds observer to be notified if a feeder was changed.
-     *
-     * @param observer Observer that should be notified
-     */
-    public void addFeederChangedListener(Observer observer) {
-      updateObservable.addObserver(observer);
-    }
-
-    /**
-     *
-     */
-    public void notifyFeederChangedListeners() {
-      updateObservable.notifyFeederChanged();
-    }
-
     @Override
     public String getQuickHelp() {
       String help = "";
@@ -520,22 +502,6 @@ public class SensorInterface extends MoteInterface implements HasQuickHelp {
       }
 
       return help;
-    }
-
-    /**
-     * Observable clients can register with to receive feeder update
-     * notifications.
-     */
-    private class FeederUpdateObservable extends Observable {
-
-      public void setFeederChanged() {
-        setChanged();
-      }
-
-      public void notifyFeederChanged() {
-        setChanged();
-        notifyObservers();
-      }
     }
 
   }

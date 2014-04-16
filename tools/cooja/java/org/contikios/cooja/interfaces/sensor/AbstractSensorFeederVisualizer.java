@@ -31,6 +31,7 @@ package org.contikios.cooja.interfaces.sensor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
@@ -42,6 +43,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import org.contikios.cooja.interfaces.SensorInterface;
 
@@ -66,28 +68,22 @@ public abstract class AbstractSensorFeederVisualizer extends JPanel {
   }
 
   /**
-   * Forwards to observers of the enclosing SensorFeederConfigFrame
-   */
-  void setFeederChanged() {
-    configurator.notifyFeederChangedListeners();
-  }
-
-  /**
    * Abstract base class for channel panels.
    *
    * Defines outer view of the panel.
    */
   protected static abstract class AbstractChannelPanel extends JPanel {
 
-    private final Sensor.Channel channel;
+    private final Channel channel;
     private final Class<? extends AbstractSensorFeeder> feederType;
 
     private final JPanel childPanel;
     private final JCheckBox selectBox;
 
-    public AbstractChannelPanel(Class<? extends AbstractSensorFeeder> type, Sensor.Channel ch) {
+    public AbstractChannelPanel(Class<? extends AbstractSensorFeeder> type, Channel ch) {
       this.feederType = type;
       this.channel = ch;
+
       String panelTitle = "Channel: " + String.valueOf(ch.name);
       if (ch.unit != null) {
         panelTitle += " [" + String.valueOf(ch.unit) + "]";
@@ -100,40 +96,73 @@ public abstract class AbstractSensorFeederVisualizer extends JPanel {
       selectBox = new JCheckBox();
       selectBox.setSelected(true);
       add(BorderLayout.WEST, selectBox);
-      childPanel = new JPanel();
+      childPanel = new JPanel(new BorderLayout());
       childPanel.setBorder(tborder);
       add(BorderLayout.CENTER, childPanel);
+
+      /* Enable / disable panel content when checkbox is checked / unchecked */
       selectBox.addItemListener(new ItemListener() {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
           if (e.getStateChange() == ItemEvent.SELECTED) {
             setPanelEnabled(true);
-          }
-          else {
+          } else {
             setPanelEnabled(false);
           }
+        }
+      });
+
+      /* Update panel if channel was updated */
+      ch.addChannelListener(new Channel.Listener() {
+
+        @Override
+        public void onFeederUpdated() {
+          SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+              updatePanel();
+            }
+          });
         }
       });
 
     }
 
     /**
-     * Disables panel if channel is already allocated to another feeder type
+     * Depending on currently activated feeder panel is activated / deactivated.
+     * If it is activated, content is updated based on current FeederParameter.
      */
-    public final void setup() {
-      if (this.channel.getFeeder() != null && !this.channel.getFeeder().getClass().isAssignableFrom(this.feederType)) {
+    private void updatePanel() {
+      if (this.channel.getFeeder() == null) {
+        setPanelEnabled(true);
+        return;
+      }
+
+      if (this.channel.getFeeder().getClass().isAssignableFrom(this.feederType)) {
+        updateContent(this.channel.getFeederParameter());
+        setPanelEnabled(true);
+      } else {
         setPanelEnabled(false);
       }
     }
+    
+    /**
+     * Sets up visual components based on the provided FeederParameter
+     * @param param FeederParameter to setup for
+     */
+    abstract void updateContent(AbstractSensorFeeder.FeederParameter param);
 
     /**
-     * Get a panel subclasses can add components to, set layout, etc.
+     * Set panel that holds content of the channel panel
      *
-     * @return
+     * @param panel
      */
-    public JPanel getPanel() {
-      return childPanel;
+    public void setContentPanel(JPanel panel) {
+      childPanel.removeAll();
+      childPanel.add(panel, BorderLayout.CENTER);
+      updatePanel();
     }
 
     /**
@@ -143,9 +172,18 @@ public abstract class AbstractSensorFeederVisualizer extends JPanel {
      */
     public void setPanelEnabled(boolean enabled) {
       childPanel.setEnabled(enabled);
-      for (Component c : childPanel.getComponents()) {
-        c.setEnabled(enabled);
-        selectBox.setSelected(enabled);
+      setAllEnabled(childPanel, enabled);
+      selectBox.setSelected(enabled);
+    }
+
+    // recursive function to enable/disable all components inside frame
+    private static void setAllEnabled(Container container, boolean enable) {
+      Component[] components = container.getComponents();
+      for (Component component : components) {
+        component.setEnabled(enable);
+        if (component instanceof Container) {
+          setAllEnabled((Container) component, enable);
+        }
       }
     }
 

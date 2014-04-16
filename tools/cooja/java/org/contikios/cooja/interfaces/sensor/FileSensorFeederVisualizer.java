@@ -123,10 +123,9 @@ public class FileSensorFeederVisualizer extends AbstractSensorFeederVisualizer i
     c.gridx = 0;
     c.gridwidth = 3;
     final List<FileChannelPanel> fcpList = new LinkedList<>();
-    for (Sensor.Channel ch : sensor.getChannels()) {
+    for (Channel ch : sensor.getChannels()) {
       FileChannelPanel tcp = new FileChannelPanel(ch);
       tcp.setAlignmentX(RIGHT_ALIGNMENT);
-      tcp.setup();
       c.gridy += 1;
       content.add(tcp, c);
       fcpList.add(tcp);
@@ -185,7 +184,6 @@ public class FileSensorFeederVisualizer extends AbstractSensorFeederVisualizer i
         }
         feeder.setLoopEnabled(loopBox.isSelected());
         feeder.commit();
-        setFeederChanged();
         
         // prevent double initialization of same feeder
         loopBox.setEnabled(false);
@@ -266,13 +264,15 @@ public class FileSensorFeederVisualizer extends AbstractSensorFeederVisualizer i
 
     private final JComboBox channelInput;
 
-    public FileChannelPanel(Sensor.Channel ch) {
+    public FileChannelPanel(Channel ch) {
       super(ManualSensorFeeder.class, ch);
-      getPanel().setLayout(new BorderLayout(10, 0));
-      getPanel().add(BorderLayout.CENTER, new JLabel("Data column"));
+      JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout(10, 0));
+      panel.add(BorderLayout.CENTER, new JLabel("Data column"));
       channelInput = new JComboBox<>();
       channelInput.setEnabled(false); // enable initial as we do not have any data
-      getPanel().add(BorderLayout.EAST, channelInput);
+      panel.add(BorderLayout.EAST, channelInput);
+      setContentPanel(panel);
     }
 
     /**
@@ -300,6 +300,12 @@ public class FileSensorFeederVisualizer extends AbstractSensorFeederVisualizer i
     @Override
     public AbstractSensorFeeder.FeederParameter toParameter() {
       return new FileFeederParameter((int) channelInput.getSelectedItem());
+    }
+
+    @Override
+    void updateContent(AbstractSensorFeeder.FeederParameter param) {
+      FileFeederParameter ffparam = (FileFeederParameter) param;
+      // TODO
     }
   }
  

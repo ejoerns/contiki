@@ -28,6 +28,8 @@
  */
 package org.contikios.cooja.interfaces.sensor;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.contikios.cooja.Mote;
@@ -45,6 +47,19 @@ public class Sensor {
   public Sensor(Mote mote, SensorAdapter sensor) {
     this.mote = mote;
     this.sensor = sensor;
+    for (Channel c : sensor.getChannels()) {
+      addForwarder(c);
+    }
+  }
+  
+  private void addForwarder(final Channel c) {
+    c.addChannelListener(new Channel.Listener() {
+
+      @Override
+      public void onFeederUpdated() {
+        notifyFeederChanged(c);
+      }
+    });
   }
 
   /**
@@ -72,10 +87,11 @@ public class Sensor {
    * @param value Value to set
    */
   public final void setValue(int channel, double value) {
-    System.out.println("Validating with model: " + getChannel(channel).getDataModel().getClass().getSimpleName());
+    logger.info("Validating with model: " + getChannel(channel).getDataModel().getClass().getSimpleName());
     /* validate and forward to SensorAdapter */
     double retval = getChannel(channel).getDataModel().validate(value);
     sensor.setValue(channel, retval);
+    notifyNewData(getChannel(channel));
   }
 
   /**
@@ -104,38 +120,6 @@ public class Sensor {
    */
   public int numChannels() {
     return sensor.getChannels().length;
-  }
-
-  public static class Channel<T> {
-
-    public String name;
-    public String unit;
-    public DataModel model;
-    public double default_ = 0.0;
-    private AbstractSensorFeeder feeder = null;
-
-    public Channel(String name, String unit, DataModel model) {
-      this.name = name;
-      this.unit = unit;
-      this.model = model;
-    }
-
-    public Channel(String name) {
-      this(name, null, new EmptyDataModel());
-    }
-
-    public DataModel getDataModel() {
-      return model;
-    }
-
-    /* to be set by the feeder */
-    public void setFeeder(AbstractSensorFeeder feeder) {
-      this.feeder = feeder;
-    }
-
-    public AbstractSensorFeeder getFeeder() {
-      return this.feeder;
-    }
   }
 
   /**
@@ -447,6 +431,56 @@ public class Sensor {
       super(msg);
     }
 
+  }
+  
+  private List<SensorListener> sensorListeners = new LinkedList<>();
+  
+  /**
+   * Interface for clients that want to listen for sensor updates have to implement.
+   */
+  public interface SensorListener {
+
+    void onFeederUpdated(Channel ch);
+    void onDataUpdated(Channel ch);
+    void onModelViolation(Channel ch);
+  }
+  
+  /**
+   * Add listener to be notified about sensor updates.
+   * @param listener Listener to add
+   */
+  public void addSensorListener(SensorListener listener) {
+    if (!sensorListeners.contains(listener)) {
+      sensorListeners.add(listener);
+    }
+  }
+  
+  /**
+   * Remove listener to be notified about sensor updates.
+   * @param listener Listener to remove
+   */
+  public void removeSensorListener(SensorListener listener) {
+    if (sensorListeners.contains(listener)) {
+      sensorListeners.remove(listener);
+    }
+  }
+  
+  private void notifyFeederChanged(Channel ch) {
+    for (SensorListener l : sensorListeners) {
+      l.onFeederUpdated(ch);
+    }
+  }
+  
+  // XXX check if required
+  private void notifyModelViolation(Channel ch) {
+    throw new UnsupportedOperationException();
+  }
+  
+  // XXX check if required
+  private void notifyNewData(Channel ch) {
+    for (SensorListener l : sensorListeners) {
+      l.onDataUpdated(ch);
+    }
   }
 
   /* XXX Configuration interface? */
