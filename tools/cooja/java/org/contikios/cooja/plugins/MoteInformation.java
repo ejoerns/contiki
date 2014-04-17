@@ -31,12 +31,13 @@
 package org.contikios.cooja.plugins;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
@@ -63,14 +64,9 @@ import org.contikios.cooja.motes.AbstractEmulatedMote;
 @PluginType(PluginType.MOTE_PLUGIN)
 public class MoteInformation extends VisPlugin implements MotePlugin {
   private static final long serialVersionUID = 2359676837283723500L;
-  private static Logger logger = Logger.getLogger(MoteInformation.class);
+  private static final Logger logger = Logger.getLogger(MoteInformation.class);
 
   private Mote mote;
-
-  private final static int LABEL_WIDTH = 170;
-  private final static int LABEL_HEIGHT = 20;
-  private final static Dimension size = new Dimension(LABEL_WIDTH,LABEL_HEIGHT);
-  
   private Simulation simulation;
 
   /**
@@ -87,109 +83,132 @@ public class MoteInformation extends VisPlugin implements MotePlugin {
 
     JLabel label;
     JButton button;
-    JPanel smallPane;
-
-    JPanel mainPane = new JPanel();
+    
+    JPanel mainPane = new JPanel(new GridBagLayout());
     mainPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
 
     /* Mote type */
-    smallPane = new JPanel(new BorderLayout());
+    GridBagConstraints c = new GridBagConstraints();
+
     label = new JLabel("Mote type");
-    label.setPreferredSize(size);
-    smallPane.add(BorderLayout.WEST, label);
+    label.setFont(label.getFont().deriveFont(Font.BOLD));
+    c.gridx = 0;
+    c.gridy = 0;
+    c.ipadx = 5;
+    c.ipady = 2;
+    c.anchor = GridBagConstraints.WEST;
+    mainPane.add(label, c);
+
     label = new JLabel(mote.getType().getDescription());
-    label.setPreferredSize(size);
-    smallPane.add(BorderLayout.EAST, label);
-    mainPane.add(smallPane);
+    c.gridx++;
+    c.anchor = GridBagConstraints.EAST;
+    mainPane.add(label, c);
 
-    smallPane = new JPanel(new BorderLayout());
     label = new JLabel(mote.getType().getIdentifier());
-    label.setPreferredSize(size);
-    smallPane.add(BorderLayout.EAST, label);
-    mainPane.add(smallPane);
+    c.gridy++;
+    c.anchor = GridBagConstraints.EAST;
+    mainPane.add(label, c);
 
-    smallPane = new JPanel(new BorderLayout());
     button = new JButton("Mote type information");
-    button.setPreferredSize(size);
+    c.gridy++;
+    c.anchor = GridBagConstraints.EAST;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    mainPane.add(button, c);
+
     button.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         simulation.getCooja().tryStartPlugin(MoteTypeInformation.class, simulation.getCooja(), simulation, mote);
       }
     });
-    smallPane.add(BorderLayout.EAST, button);
-    mainPane.add(smallPane);
 
     /* Mote interfaces */
-    smallPane = new JPanel(new BorderLayout());
     label = new JLabel("Mote interfaces");
-    label.setPreferredSize(size);
-    smallPane.add(BorderLayout.WEST, label);
-    label = new JLabel(mote.getInterfaces().getInterfaces().size() + " interfaces");
-    label.setPreferredSize(size);
-    smallPane.add(BorderLayout.EAST, label);
-    mainPane.add(smallPane);
+    label.setFont(label.getFont().deriveFont(Font.BOLD));
+    c.gridx = 0;
+    c.gridy++;
+    c.anchor = GridBagConstraints.WEST;
+    c.fill = GridBagConstraints.NONE;
+    mainPane.add(label, c);
 
-    smallPane = new JPanel(new BorderLayout());
+    label = new JLabel(mote.getInterfaces().getInterfaces().size() + " interfaces");
+    c.gridx++;
+    c.anchor = GridBagConstraints.EAST;
+    mainPane.add(label, c);
+
     button = new JButton("Mote interface viewer");
-    button.setPreferredSize(size);
+//    button.setPreferredSize(size);
+    c.gridy++;
+    c.anchor = GridBagConstraints.EAST;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    mainPane.add(button, c);
+
     button.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         simulation.getCooja().tryStartPlugin(MoteInterfaceViewer.class, simulation.getCooja(), simulation, mote);
       }
     });
-    smallPane.add(BorderLayout.EAST, button);
-    mainPane.add(smallPane);
-    
+
     /* CPU frequency */
     if (mote instanceof AbstractEmulatedMote) {
       AbstractEmulatedMote emulatedMote = (AbstractEmulatedMote) mote;
-      smallPane = new JPanel(new BorderLayout());
       label = new JLabel("CPU frequency");
-      label.setPreferredSize(size);
-      smallPane.add(BorderLayout.WEST, label);
+      label.setFont(label.getFont().deriveFont(Font.BOLD));
+      c.gridx = 0;
+      c.gridy++;
+      c.anchor = GridBagConstraints.WEST;
+      c.fill = GridBagConstraints.NONE;
+      mainPane.add(label, c);
       if (emulatedMote.getCPUFrequency() < 0) {
         label = new JLabel("[unknown]");
       } else {
         label = new JLabel(emulatedMote.getCPUFrequency() + " Hz");
       }
-      label.setPreferredSize(size);
-      smallPane.add(BorderLayout.EAST, label);
-      mainPane.add(smallPane);
+      c.gridx++;
+      c.anchor = GridBagConstraints.EAST;
+      mainPane.add(label, c);
     }
-    
-    /* Remove button */
-    smallPane = new JPanel(new BorderLayout());
-    label = new JLabel("Remove mote");
-    label.setPreferredSize(size);
-    smallPane.add(BorderLayout.WEST, label);
 
-    button = new JButton("Remove");
-    button.setPreferredSize(size);
+    /* Remove button */
+//    label = new JLabel("Remove mote");
+//    label.setFont(label.getFont().deriveFont(Font.BOLD));
+//    c.gridx = 0;
+//    c.gridy++;
+//    c.anchor = GridBagConstraints.WEST;
+//    mainPane.add(label, c);
+//
+//    button = new JButton("Remove");
+//    c.gridx++;
+//    c.anchor = GridBagConstraints.EAST;
+//    c.fill = GridBagConstraints.HORIZONTAL;
+//    mainPane.add(button, c);
+
     button.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         /* TODO In simulation event (if running) */
         simulation.removeMote(MoteInformation.this.mote);
       }
     });
-    smallPane.add(BorderLayout.EAST, button);
-    mainPane.add(smallPane);
 
-    this.getContentPane().add(BorderLayout.CENTER,
-        new JScrollPane(mainPane,
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+    this.getContentPane().add(
+            BorderLayout.CENTER,
+            new JScrollPane(mainPane,
+                            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
   }
-  
+
   @Override
   public void packPlugin(JDesktopPane pane) {
     pack();
-    setSize(new Dimension(getWidth() + 15, getHeight() + 15));
   }
 
+  @Override
   public void closePlugin() {
   }
 
+  @Override
   public Mote getMote() {
     return mote;
   }
