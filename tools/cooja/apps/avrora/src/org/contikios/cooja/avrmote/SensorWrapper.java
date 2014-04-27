@@ -30,9 +30,9 @@
 package org.contikios.cooja.avrmote;
 
 import avrora.sim.platform.sensors.PushSensorSource;
-import org.contikios.cooja.interfaces.sensor.Sensor.Channel;
-import org.contikios.cooja.interfaces.sensor.Sensor.DataModel;
-import org.contikios.cooja.interfaces.sensor.Sensor.RangeDataModel;
+import org.contikios.cooja.interfaces.sensor.Channel;
+import org.contikios.cooja.interfaces.sensor.DataModel;
+import org.contikios.cooja.interfaces.sensor.DataModel.RangeDataModel;
 import org.contikios.cooja.interfaces.sensor.SensorAdapter;
 
 /**

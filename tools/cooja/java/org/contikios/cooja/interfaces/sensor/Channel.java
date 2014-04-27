@@ -39,22 +39,22 @@ import java.util.List;
 public class Channel {
   public String name;
   public String unit;
-  public Sensor.DataModel model;
+  public DataModel model;
   public double default_ = 0.0;
   private AbstractSensorFeeder feeder = null;
   private AbstractSensorFeeder.FeederParameter param = null;
 
-  public Channel(String name, String unit, Sensor.DataModel model) {
+  public Channel(String name, String unit, DataModel model) {
     this.name = name;
     this.unit = unit;
     this.model = model;
   }
 
   public Channel(String name) {
-    this(name, null, new Sensor.EmptyDataModel());
+    this(name, null, new DataModel.EmptyDataModel());
   }
 
-  public Sensor.DataModel getDataModel() {
+  public DataModel getDataModel() {
     return model;
   }
 

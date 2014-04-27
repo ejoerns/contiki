@@ -28,7 +28,7 @@
  */
 package org.contikios.cooja.mspmote.interfaces.sensors;
 
-import org.contikios.cooja.interfaces.sensor.Sensor.Channel;
+import org.contikios.cooja.interfaces.sensor.Channel;
 import org.contikios.cooja.interfaces.sensor.SensorAdapter;
 
 
