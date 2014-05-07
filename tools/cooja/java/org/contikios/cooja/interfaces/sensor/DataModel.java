@@ -30,8 +30,7 @@
 package org.contikios.cooja.interfaces.sensor;
 
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Data model represents the input data a sensor accepts.
@@ -57,7 +56,7 @@ public abstract class DataModel {
    */
   public static final int STRATEGY_MAKE_VALID = 0x08;
   
-  private static final Logger logger = LoggerFactory.getLogger(DataModel.class);
+  private static final Logger logger = Logger.getLogger(DataModel.class);
   
   private int strategy;
 
