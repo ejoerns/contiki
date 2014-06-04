@@ -624,5 +624,21 @@ uip_ds6_defrt_periodic(void)
   }
 }
 /*---------------------------------------------------------------------------*/
+uip_ds6_defrt_t *
+uip_ds6_defrt_head(void)
+{
+  return list_head(defaultrouterlist);
+}
+/*---------------------------------------------------------------------------*/
+uip_ds6_defrt_t *
+uip_ds6_defrt_next(uip_ds6_defrt_t *r)
+{
+  if(r != NULL) {
+    uip_ds6_defrt_t *n = list_item_next(r);
+    return n;
+  }
+  return NULL;
+}
+/*---------------------------------------------------------------------------*/
 
 #endif /* UIP_CONF_IPV6 */
