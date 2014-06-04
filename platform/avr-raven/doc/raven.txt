@@ -1,0 +1,12 @@
+/**
+ * \addtogroup platform
+ * @{
+ **/
+
+/**
+ * \defgroup raven Raven
+ * @{
+ */
+
+/** @} */ // raven
+/** @} */ // platform
