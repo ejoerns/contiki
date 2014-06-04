@@ -145,4 +145,14 @@ public class ApplicationLED extends LEDInterface {
      public void setConfigXML(Collection<Element> configXML, boolean visAvailable) {
         // TODO Auto-generated method stub
     }
-   }
+
+    @Override
+    public LED[] getLEDs() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      }
+
+    @Override
+    public LED getLED(int idx) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+}

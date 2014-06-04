@@ -210,4 +210,14 @@ public class ContikiLED extends LEDInterface implements ContikiMoteInterface, Po
   public void setConfigXML(Collection<Element> configXML, boolean visAvailable) {
   }
 
+  @Override
+  public LED[] getLEDs() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public LED getLED(int idx) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
 }
