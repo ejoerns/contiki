@@ -56,8 +56,21 @@ mac_call_sent_callback(mac_callback_t sent, void *ptr, int status, int num_tx)
   case MAC_TX_OK:
     PRINTF("mac: sent after %d tx\n", num_tx);
     break;
+
+  case MAC_TX_DEFERRED:
+    PRINTF("mac: deferred after %d tx\n", num_tx);
+    break;
+
+  case MAC_TX_ERR:
+    PRINTF("mac: tx err after %d tx\n", num_tx);
+    break;
+
+    case MAC_TX_ERR_FATAL:
+    PRINTF("mac: fatal tx err after %d tx\n", num_tx);
+    break;
+
   default:
-    PRINTF("mac: error %d after %d tx\n", status, num_tx);
+    PRINTF("mac: unknown error %d after %d tx\n", status, num_tx);
   }
 
   if(sent) {
