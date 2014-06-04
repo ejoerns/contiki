@@ -39,7 +39,7 @@ import org.jdom.Element;
 
 import org.contikios.cooja.*;
 import org.contikios.cooja.contikimote.ContikiMoteInterface;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.interfaces.PolledAfterActiveTicks;
 
 /**
@@ -61,7 +61,7 @@ import org.contikios.cooja.interfaces.PolledAfterActiveTicks;
  *
  * @author Fredrik Osterlind
  */
-public class ContikiLED extends LED implements ContikiMoteInterface, PolledAfterActiveTicks {
+public class ContikiLED extends LEDInterface implements ContikiMoteInterface, PolledAfterActiveTicks {
   private static Logger logger = Logger.getLogger(ContikiLED.class);
 
   private Mote mote = null;

@@ -43,7 +43,7 @@ import org.jdom.Element;
 
 import org.contikios.cooja.ClassDescription;
 import org.contikios.cooja.Mote;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.mspmote.Exp5438Mote;
 import se.sics.mspsim.core.IOPort;
 import se.sics.mspsim.core.IOUnit;
@@ -54,7 +54,7 @@ import se.sics.mspsim.platform.ti.Exp5438Node;
  * @author Fredrik Osterlind
  */
 @ClassDescription("Exp5438 LEDs")
-public class Exp5438LED extends LED {
+public class Exp5438LED extends LEDInterface {
   private static Logger logger = Logger.getLogger(Exp5438LED.class);
 
   private Exp5438Mote mspMote;

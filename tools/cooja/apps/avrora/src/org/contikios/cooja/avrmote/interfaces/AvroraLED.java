@@ -45,7 +45,7 @@ import org.jdom.Element;
 import org.contikios.cooja.ClassDescription;
 import org.contikios.cooja.Mote;
 import org.contikios.cooja.avrmote.AvroraMote;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import avrora.sim.FiniteStateMachine;
 
 /**
@@ -53,7 +53,7 @@ import avrora.sim.FiniteStateMachine;
  * @author David Kopf
  */
 @ClassDescription("LEDs")
-public class AvroraLED extends LED {
+public class AvroraLED extends LEDInterface {
   private static Logger logger = Logger.getLogger(AvroraLED.class);
 
   private avrora.sim.FiniteStateMachine.Probe[] ledProbes = {null, null, null, null};

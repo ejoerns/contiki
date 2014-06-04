@@ -42,7 +42,7 @@ import org.contikios.cooja.ClassDescription;
 import org.contikios.cooja.Mote;
 import org.contikios.cooja.Simulation;
 import org.contikios.cooja.SimEventCentral.MoteCountListener;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.interfaces.Position;
 import org.contikios.cooja.plugins.Visualizer;
 import org.contikios.cooja.plugins.VisualizerSkin;
@@ -68,13 +68,13 @@ public class LEDVisualizerSkin implements VisualizerSkin {
   };
   private MoteCountListener newMotesListener = new MoteCountListener() {
     public void moteWasAdded(Mote mote) {
-      LED led = mote.getInterfaces().getLED();
+      LEDInterface led = mote.getInterfaces().getLED();
       if (led != null) {
         led.addObserver(ledObserver);
       }
     }
     public void moteWasRemoved(Mote mote) {
-      LED led = mote.getInterfaces().getLED();
+      LEDInterface led = mote.getInterfaces().getLED();
       if (led != null) {
         led.deleteObserver(ledObserver);
       }
@@ -109,7 +109,7 @@ public class LEDVisualizerSkin implements VisualizerSkin {
     /* Paint LEDs left of each mote */
     Mote[] allMotes = simulation.getMotes();
     for (Mote mote: allMotes) {
-      LED leds = mote.getInterfaces().getLED();
+      LEDInterface leds = mote.getInterfaces().getLED();
       if (leds == null) {
         continue;
       }

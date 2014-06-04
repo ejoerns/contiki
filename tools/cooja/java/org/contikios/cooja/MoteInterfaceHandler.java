@@ -58,7 +58,7 @@ public class MoteInterfaceHandler {
   private Clock myClock;
   private IPAddress myIPAddress;
   private RimeAddress myRimeAddress;
-  private LED myLED;
+  private LEDInterface myLED;
   private Log myLog;
   private MoteID myMoteID;
   private PIR myPIR;
@@ -204,9 +204,9 @@ public class MoteInterfaceHandler {
    *
    * @return LED interface
    */
-  public LED getLED() {
+  public LEDInterface getLED() {
     if (myLED == null) {
-      myLED = getInterfaceOfType(LED.class);
+      myLED = getInterfaceOfType(LEDInterface.class);
     }
     return myLED;
   }

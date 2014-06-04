@@ -109,7 +109,7 @@ import org.contikios.cooja.SimEventCentral.MoteCountListener;
 import org.contikios.cooja.Simulation;
 import org.contikios.cooja.SupportedArguments;
 import org.contikios.cooja.VisPlugin;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.interfaces.Position;
 import org.contikios.cooja.interfaces.SerialPort;
 import org.contikios.cooja.plugins.skins.AddressVisualizerSkin;
@@ -1558,7 +1558,7 @@ public class Visualizer extends VisPlugin implements HasQuickHelp {
     }
     public void doAction(Visualizer visualizer, Mote mote) {
       Simulation simulation = mote.getSimulation();
-      LED led = mote.getInterfaces().getLED();
+      LEDInterface led = mote.getInterfaces().getLED();
       if (led == null) {
         return;
       }

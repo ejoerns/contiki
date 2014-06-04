@@ -14,7 +14,7 @@ import org.jdom.Element;
 
 import org.contikios.cooja.ClassDescription;
 import org.contikios.cooja.Mote;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.mspmote.Exp5438Mote;
 import se.sics.mspsim.core.IOPort;
 import se.sics.mspsim.core.IOUnit;
@@ -24,7 +24,7 @@ import se.sics.mspsim.core.PortListener;
  * @author Fredrik Osterlind
  */
 @ClassDescription("Trxeb LEDs")
-public class TrxebLEDs extends LED {
+public class TrxebLEDs extends LEDInterface {
 	private static Logger logger = Logger.getLogger(TrxebLEDs.class);
 
 	private Exp5438Mote mspMote;

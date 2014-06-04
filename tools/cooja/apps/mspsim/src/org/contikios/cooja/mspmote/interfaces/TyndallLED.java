@@ -43,7 +43,7 @@ import org.jdom.Element;
 
 import org.contikios.cooja.ClassDescription;
 import org.contikios.cooja.Mote;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.mspmote.TyndallMote;
 import se.sics.mspsim.core.IOPort;
 import se.sics.mspsim.core.IOUnit;
@@ -54,7 +54,7 @@ import se.sics.mspsim.platform.tyndall.TyndallNode;
  * @author Fredrik Osterlind
  */
 @ClassDescription("Tyndall LEDs")
-public class TyndallLED extends LED {
+public class TyndallLED extends LEDInterface {
   private static Logger logger = Logger.getLogger(TyndallLED.class);
 
   private TyndallMote mspMote;

@@ -14,7 +14,7 @@ import org.jdom.Element;
 import org.contikios.cooja.*;
 import org.contikios.cooja.contikimote.interfaces.ContikiLED;
 
-public class ApplicationLED extends LED {
+public class ApplicationLED extends LEDInterface {
     private static Logger logger = Logger.getLogger(ContikiLED.class);
 
     private Mote mote = null;

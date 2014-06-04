@@ -39,7 +39,7 @@ import org.contikios.cooja.*;
  * @author Fredrik Osterlind
  */
 @ClassDescription("LEDs")
-public abstract class LED extends MoteInterface {
+public abstract class LEDInterface extends MoteInterface {
   
   /**
    * @return True if any LED is on, false otherwise

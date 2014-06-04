@@ -61,7 +61,7 @@ import org.contikios.cooja.Simulation;
 import org.contikios.cooja.VisPlugin;
 import org.contikios.cooja.contikimote.ContikiMoteType;
 import org.contikios.cooja.interfaces.Button;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.interfaces.Log;
 import org.contikios.cooja.interfaces.PIR;
 import org.contikios.cooja.interfaces.Position;
@@ -176,7 +176,7 @@ public class EventListener extends VisPlugin {
 
     // Add standard interfaces
     allInterfacesDups.add(Button.class);
-    allInterfacesDups.add(LED.class);
+    allInterfacesDups.add(LEDInterface.class);
     allInterfacesDups.add(Log.class);
     allInterfacesDups.add(PIR.class);
     allInterfacesDups.add(Position.class);

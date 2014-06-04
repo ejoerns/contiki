@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import org.contikios.cooja.*;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.mspmote.SkyMote;
 import se.sics.mspsim.core.IOPort;
 import se.sics.mspsim.core.IOUnit;
@@ -48,7 +48,7 @@ import se.sics.mspsim.platform.sky.SkyNode;
  * @author Fredrik Osterlind
  */
 @ClassDescription("Sky LED")
-public class SkyLED extends LED {
+public class SkyLED extends LEDInterface {
   private static Logger logger = Logger.getLogger(SkyLED.class);
 
   private SkyMote mspMote;

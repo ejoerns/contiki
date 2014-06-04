@@ -38,7 +38,7 @@ import javax.swing.JPanel;
 import org.jdom.Element;
 import org.contikios.cooja.ClassDescription;
 import org.contikios.cooja.Mote;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.mspmote.MspMote;
 import se.sics.mspsim.chip.Leds;
 import se.sics.mspsim.core.StateChangeListener;
@@ -47,7 +47,7 @@ import se.sics.mspsim.core.StateChangeListener;
  * @author Fredrik Osterlind, Niclas Finne
  */
 @ClassDescription("Leds")
-public class MspLED extends LED {
+public class MspLED extends LEDInterface {
 
     private final Leds leds;
     private Color[] onColors;

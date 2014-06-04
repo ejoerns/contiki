@@ -94,7 +94,7 @@ import org.contikios.cooja.VisPlugin;
 import org.contikios.cooja.Watchpoint;
 import org.contikios.cooja.WatchpointMote;
 import org.contikios.cooja.WatchpointMote.WatchpointListener;
-import org.contikios.cooja.interfaces.LED;
+import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.interfaces.Radio;
 import org.contikios.cooja.interfaces.Radio.RadioEvent;
 import org.contikios.cooja.motes.AbstractEmulatedMote;
@@ -1059,7 +1059,7 @@ public class TimeLine extends VisPlugin implements HasQuickHelp {
 
   private void addMoteObservers(final Mote mote, final MoteEvents moteEvents) {
     /* LEDs */
-    final LED moteLEDs = mote.getInterfaces().getLED();
+    final LEDInterface moteLEDs = mote.getInterfaces().getLED();
     if (moteLEDs != null) {
       LEDEvent startupEv = new LEDEvent(
           simulation.getSimulationTime(),
