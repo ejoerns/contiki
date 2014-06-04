@@ -50,7 +50,8 @@
 
 #include "servreg-hack.h"
 
-#include <stdio.h>
+#define DEBUG DEBUG_NONE
+#include "net/ip/uip-debug.h"
 
 struct servreg_hack_registration {
   struct servreg_hack_registration *next;
@@ -150,7 +151,7 @@ servreg_hack_register(servreg_hack_id_t id, const uip_ipaddr_t *addr)
 
   r = memb_alloc(&registrations);
   if(r == NULL) {
-    printf("servreg_hack_register: error, could not allocate memory, should reclaim another registration but this has not been implemented yet.\n");
+    PRINTF("servreg_hack_register: error, could not allocate memory, should reclaim another registration but this has not been implemented yet.\n");
     return;
   }
   r->id = id;
@@ -207,6 +208,7 @@ handle_incoming_reg(const uip_ipaddr_t *owner, servreg_hack_id_t id, uint8_t seq
 {
   servreg_hack_item_t *t;
   struct servreg_hack_registration *r;
+  PRINTF("servreg: handle_incoming_req(%p, %d, %d)\n", owner, id, seqno);
 
   /* Walk through list, see if we already have a service ID
      registered. If so, we do different things depending on the seqno
@@ -225,8 +227,10 @@ handle_incoming_reg(const uip_ipaddr_t *owner, servreg_hack_id_t id, uint8_t seq
       t != NULL;
       t = list_item_next(t)) {
     if(servreg_hack_item_id(t) == id) {
+      PRINTF("servreg: known entry\n");
       r = t;
       if(SEQNO_LT(r->seqno, seqno)) {
+        PRINTF("servreg: update old entry\n");
         r->seqno = seqno;
         timer_set(&r->timer, LIFETIME);
 
@@ -241,13 +245,18 @@ handle_incoming_reg(const uip_ipaddr_t *owner, servreg_hack_id_t id, uint8_t seq
 
   r = memb_alloc(&registrations);
   if(r == NULL) {
-    printf("servreg_hack_register: error, could not allocate memory, should reclaim another registration but this has not been implemented yet.\n");
+    PRINTF("servreg_hack_register: error, could not allocate memory, should reclaim another registration but this has not been implemented yet.\n");
     return;
   }
   r->id = id;
   r->seqno = 1;
   uip_ipaddr_copy(&r->addr, owner);
   timer_set(&r->timer, LIFETIME);
+  PRINTF("servreg: Add new Entry for id %d\n", r->id);
+  PRINTF("ip is ");
+  uip_debug_ipaddr_print(&r->addr);
+  PRINTF("\n");
+
   list_add(others_services, r);
 }
 /*---------------------------------------------------------------------------*/
@@ -319,11 +328,11 @@ send_udp_packet(struct uip_udp_conn *conn)
     bufptr += MSG_ADDRS_LEN;
     ++numregs;
   }
-  /*  printf("send_udp_packet numregs %d\n", numregs);*/
+  PRINTF("servreg: send_udp_packet numregs %d\n", numregs);
   buf[MSG_NUMREGS_OFFSET] = numregs;
 
   if(numregs > 0) {
-    /*    printf("Sending buffer len %d\n", bufptr);*/
+    PRINTF("servreg: Sending buffer len %d\n", bufptr);
     uip_udp_packet_send(conn, buf, bufptr);
   }
 }
@@ -339,7 +348,7 @@ parse_incoming_packet(const uint8_t *buf, int len)
   numregs = buf[MSG_NUMREGS_OFFSET];
   flags   = buf[MSG_FLAGS_OFFSET];
 
-  /*  printf("parse_incoming_packet Numregs %d flags %d\n", numregs, flags);*/
+  PRINTF("servreg: parse_incoming_packet Numregs %d flags %d\n", numregs, flags);
 
   bufptr = MSG_ADDRS_OFFSET;
   for(i = 0; i < numregs; ++i) {
