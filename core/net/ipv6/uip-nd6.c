@@ -4,8 +4,8 @@
  */
 
 /**
- * \file
- *         Neighbor discovery (RFC 4861)
+ * \file Neighbor discovery (RFC 4861)
+ *
  * \author Mathilde Durvy <mdurvy@cisco.com>
  * \author Julien Abeille <jabeille@cisco.com>
  */

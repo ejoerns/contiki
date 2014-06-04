@@ -27,9 +27,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
+ */
+
+/** 
+ * \file Neighbor Table 
  *
- * Authors: Simon Duquennoy <simonduq@sics.se>
- *          Joris Borms <joris.borms@vub.ac.be>
+ * \author Simon Duquennoy <simonduq@sics.se>
+ * \author Joris Borms <joris.borms@vub.ac.be>
  */
 
 #ifndef NBR_TABLE_H_

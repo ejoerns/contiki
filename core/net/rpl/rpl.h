@@ -27,13 +27,23 @@
  * SUCH DAMAGE.
  *
  * This file is part of the Contiki operating system.
- *
- * \file
- *	Public API declarations for ContikiRPL.
- * \author
- *	Joakim Eriksson <joakime@sics.se> & Nicolas Tsiftes <nvt@sics.se>
- *
  */
+
+/** 
+ * \file Public API declarations for ContikiRPL.
+ *
+ * \author Joakim Eriksson <joakime@sics.se>
+ * \author Nicolas Tsiftes <nvt@sics.se>
+ */
+
+/**
+ * @addtogroup uip6
+ * @{ */
+
+/**
+ * @defgroup rpl RPL implementation ContikiRPL (RFC 6550).
+ *
+ * @{ */
 
 #ifndef RPL_H
 #define RPL_H
@@ -49,7 +59,8 @@
 typedef uint16_t rpl_rank_t;
 typedef uint16_t rpl_ocp_t;
 /*---------------------------------------------------------------------------*/
-/* DAG Metric Container Object Types, to be confirmed by IANA. */
+/** @name DAG Metric Container Object Types, to be confirmed by IANA. 
+ * @{ */
 #define RPL_DAG_MC_NONE			0 /* Local identifier for empty MC */
 #define RPL_DAG_MC_NSA                  1 /* Node State and Attributes */
 #define RPL_DAG_MC_ENERGY               2 /* Node Energy */
@@ -59,20 +70,25 @@ typedef uint16_t rpl_ocp_t;
 #define RPL_DAG_MC_LQL                  6 /* Link Quality Level */
 #define RPL_DAG_MC_ETX                  7 /* Expected Transmission Count */
 #define RPL_DAG_MC_LC                   8 /* Link Color */
+/** @} */
 
-/* DAG Metric Container flags. */
+/** @name DAG Metric Container flags.
+ * @{ */
 #define RPL_DAG_MC_FLAG_P               0x8
 #define RPL_DAG_MC_FLAG_C               0x4
 #define RPL_DAG_MC_FLAG_O               0x2
 #define RPL_DAG_MC_FLAG_R               0x1
+/** @} */
 
-/* DAG Metric Container aggregation mode. */
+/** @name DAG Metric Container aggregation mode.
+ * @{ */
 #define RPL_DAG_MC_AGGR_ADDITIVE        0
 #define RPL_DAG_MC_AGGR_MAXIMUM         1
 #define RPL_DAG_MC_AGGR_MINIMUM         2
 #define RPL_DAG_MC_AGGR_MULTIPLICATIVE  3
+/** @} */
 
-/* The bit index within the flags field of
+/** The bit index within the flags field of
    the rpl_metric_object_energy structure. */
 #define RPL_DAG_MC_ENERGY_INCLUDED	3
 #define RPL_DAG_MC_ENERGY_TYPE		1
@@ -87,7 +103,7 @@ struct rpl_metric_object_energy {
   uint8_t energy_est;
 };
 
-/* Logical representation of a DAG Metric Container. */
+/** Logical representation of a DAG Metric Container. */
 struct rpl_metric_container {
   uint8_t type;
   uint8_t flags;
@@ -117,7 +133,7 @@ struct rpl_parent {
 };
 typedef struct rpl_parent rpl_parent_t;
 /*---------------------------------------------------------------------------*/
-/* RPL DIO prefix suboption */
+/** RPL DIO prefix suboption */
 struct rpl_prefix {
   uip_ipaddr_t prefix;
   uint32_t lifetime;
@@ -126,7 +142,7 @@ struct rpl_prefix {
 };
 typedef struct rpl_prefix rpl_prefix_t;
 /*---------------------------------------------------------------------------*/
-/* Directed Acyclic Graph */
+/** Directed Acyclic Graph */
 struct rpl_dag {
   uip_ipaddr_t dag_id;
   rpl_rank_t min_rank; /* should be reset per DAG iteration! */
@@ -144,47 +160,41 @@ struct rpl_dag {
 typedef struct rpl_dag rpl_dag_t;
 typedef struct rpl_instance rpl_instance_t;
 /*---------------------------------------------------------------------------*/
-/*
+/**
  * API for RPL objective functions (OF)
- *
- * reset(dag)
- *
- *  Resets the objective function state for a specific DAG. This function is
- *  called when doing a global repair on the DAG.
- *
- * neighbor_link_callback(parent, known, etx)
- *
- *  Receives link-layer neighbor information. The parameter "known" is set
- *  either to 0 or 1. The "etx" parameter specifies the current
- *  ETX(estimated transmissions) for the neighbor.
- *
- * best_parent(parent1, parent2)
- *
- *  Compares two parents and returns the best one, according to the OF.
- *
- * best_dag(dag1, dag2)
- *
- *  Compares two DAGs and returns the best one, according to the OF.
- *
- * calculate_rank(parent, base_rank)
- *
- *  Calculates a rank value using the parent rank and a base rank.
- *  If "parent" is NULL, the objective function selects a default increment
- *  that is adds to the "base_rank". Otherwise, the OF uses information known
- *  about "parent" to select an increment to the "base_rank".
- *
- * update_metric_container(dag)
- *
- *  Updates the metric container for outgoing DIOs in a certain DAG.
- *  If the objective function of the DAG does not use metric containers, 
- *  the function should set the object type to RPL_DAG_MC_NONE.
  */
 struct rpl_of {
+  /**
+   * Resets the objective function state for a specific DAG.
+   * This function is called when doing a global repair on the DAG.
+   */
   void (*reset)(struct rpl_dag *);
+  /**
+   * Receives link-layer neighbor information.
+   * The parameter "known" is set either to 0 or 1.
+   * The "etx" parameter specifies the current ETX(estimated transmissions) for the neighbor.
+   */
   void (*neighbor_link_callback)(rpl_parent_t *, int, int);
+  /**
+   * Compares two parents and returns the best one, according to the OF.
+   */
   rpl_parent_t *(*best_parent)(rpl_parent_t *, rpl_parent_t *);
+  /**
+   * Compares two DAGs and returns the best one, according to the OF.
+   */
   rpl_dag_t *(*best_dag)(rpl_dag_t *, rpl_dag_t *);
+  /**
+   * Calculates a rank value using the parent rank and a base rank.
+   * If "parent" is NULL, the objective function selects a default increment
+   * that is adds to the "base_rank". Otherwise, the OF uses information known
+   * about "parent" to select an increment to the "base_rank".
+   */
   rpl_rank_t (*calculate_rank)(rpl_parent_t *, rpl_rank_t);
+  /**
+   * Updates the metric container for outgoing DIOs in a certain DAG.
+   * If the objective function of the DAG does not use metric containers, 
+   * the function should set the object type to RPL_DAG_MC_NONE.
+   */
   void (*update_metric_container)( rpl_instance_t *);
   rpl_ocp_t ocp;
 };
@@ -193,7 +203,7 @@ typedef struct rpl_of rpl_of_t;
 /* Declare the selected objective function. */
 extern rpl_of_t RPL_OF;
 /*---------------------------------------------------------------------------*/
-/* Instance */
+/** RPL Instance */
 struct rpl_instance {
   /* DAG configuration */
   rpl_metric_container_t mc;
@@ -228,37 +238,58 @@ struct rpl_instance {
 };
 
 /*---------------------------------------------------------------------------*/
-/* Public RPL functions. */
+/**
+ * @name Public RPL functions.
+ * @{ */
+/** */
 void rpl_init(void);
+/** */
 void uip_rpl_input(void);
+/** */
 rpl_dag_t *rpl_set_root(uint8_t instance_id, uip_ipaddr_t * dag_id);
+/** */
 int rpl_set_prefix(rpl_dag_t *dag, uip_ipaddr_t *prefix, unsigned len);
+/** */
 int rpl_repair_root(uint8_t instance_id);
+/** */
 int rpl_set_default_route(rpl_instance_t *instance, uip_ipaddr_t *from);
+/** */
 rpl_dag_t *rpl_get_any_dag(void);
+/** */
 rpl_instance_t *rpl_get_instance(uint8_t instance_id);
+/** */
 void rpl_update_header_empty(void);
+/** */
 int rpl_update_header_final(uip_ipaddr_t *addr);
+/** */
 int rpl_verify_header(int);
+/** */
 void rpl_insert_header(void);
+/** */
 void rpl_remove_header(void);
+/** */
 uint8_t rpl_invert_header(void);
+/** */
 uip_ipaddr_t *rpl_get_parent_ipaddr(rpl_parent_t *nbr);
+/** */
 rpl_rank_t rpl_get_parent_rank(uip_lladdr_t *addr);
+/** */
 uint16_t rpl_get_parent_link_metric(const uip_lladdr_t *addr);
+/** */
 void rpl_dag_init(void);
-
+/** @} */
 
 /**
  * RPL modes
  *
- * The RPL module can be in either of three modes: mesh mode
- * (RPL_MODE_MESH), feater mode (RPL_MODE_FEATHER), and leaf mode
- * (RPL_MODE_LEAF). In mesh mode, nodes forward data for other nodes,
- * and are reachable by others. In feather mode, nodes can forward
- * data for other nodes, but are not reachable themselves. In leaf
- * mode, nodes do not forward data for others, but are reachable by
- * others. */
+ * The RPL module can be in either of three modes: 
+ * - mesh mode (RPL_MODE_MESH):
+ *   nodes forward data for other nodes, and are reachable by others
+ * - feater mode (RPL_MODE_FEATHER):
+ *   nodes can forward data for other nodes, but are not reachable themselves
+ * - and leaf mode (RPL_MODE_LEAF):
+ *   nodes do not forward data for others, but are reachable by others
+ */
 enum rpl_mode {
   RPL_MODE_MESH = 0,
   RPL_MODE_FEATHER = 1,
@@ -280,5 +311,7 @@ enum rpl_mode rpl_set_mode(enum rpl_mode mode);
  */
 enum rpl_mode rpl_get_mode(void);
 
+/** @} */
+/** @} */
 /*---------------------------------------------------------------------------*/
 #endif /* RPL_H */

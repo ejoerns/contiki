@@ -27,12 +27,13 @@
  * SUCH DAMAGE.
  *
  * This file is part of the Contiki operating system.
+ */
+
+/**
+ * \file Public configuration and API declarations for ContikiRPL.
  *
- * \file
- *	Public configuration and API declarations for ContikiRPL.
- * \author
- *	Joakim Eriksson <joakime@sics.se> & Nicolas Tsiftes <nvt@sics.se>
- *
+ * \author Joakim Eriksson <joakime@sics.se>
+ * \author Nicolas Tsiftes <nvt@sics.se>
  */
 
 #ifndef RPL_CONF_H

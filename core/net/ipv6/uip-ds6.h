@@ -1,15 +1,3 @@
-/**
- * \addtogroup uip6
- * @{
- */
-
-/**
- * \file
- *         Network interface and stateless autoconfiguration (RFC 4862)
- * \author Mathilde Durvy <mdurvy@cisco.com>
- * \author Julien Abeille <jabeille@cisco.com>
- *
- */
 /*
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,6 +27,21 @@
  *
  */
 
+/**
+ * \addtogroup uip6
+ * @{
+ */
+
+/**
+ * \file Network interface and stateless autoconfiguration (RFC 4862)
+ *
+ * \author Mathilde Durvy <mdurvy@cisco.com>
+ * \author Julien Abeille <jabeille@cisco.com>
+ */
+
+/**
+ * @defgroup uip_ds6 Network interface and stateless autoconfiguration (RFC 4862)
+ * @{ */
 #ifndef UIP_DS6_H_
 #define UIP_DS6_H_
 
@@ -119,22 +122,28 @@
 #define UIP_DS6_LL_NUD UIP_CONF_DS6_LL_NUD
 #endif
 
-/** \brief Possible states for the an address  (RFC 4862) */
+/** \name Possible states for the an address  (RFC 4862)
+ * @{ */
 #define ADDR_TENTATIVE 0
 #define ADDR_PREFERRED 1
 #define ADDR_DEPRECATED 2
+/** @} */
 
-/** \brief How the address was acquired: Autoconf, DHCP or manually */
+/** \name How the address was acquired: Autoconf, DHCP or manually
+ * @{ */
 #define  ADDR_ANYTYPE 0
 #define  ADDR_AUTOCONF 1
 #define  ADDR_DHCP 2
 #define  ADDR_MANUAL 3
+/** @} */
 
-/** \brief General DS6 definitions */
+/** \name General DS6 definitions
+ * @{ */
 #define UIP_DS6_PERIOD   (CLOCK_SECOND/10)  /** Period for uip-ds6 periodic task*/
 #define FOUND 0
 #define FREESPACE 1
 #define NOSPACE 2
+/** @} */
 /*--------------------------------------------------*/
 
 #if UIP_CONF_IPV6_QUEUE_PKT
@@ -162,7 +171,7 @@ typedef struct uip_ds6_prefix {
 } uip_ds6_prefix_t;
 #endif /*UIP_CONF_ROUTER */
 
-/** * \brief Unicast address structure */
+/** \brief Unicast address structure */
 typedef struct uip_ds6_addr {
   uint8_t isused;
   uip_ipaddr_t ipaddr;
@@ -247,12 +256,20 @@ uint8_t uip_ds6_list_loop(uip_ds6_element_t *list, uint8_t size,
                           uint8_t ipaddrlen,
                           uip_ds6_element_t **out_element);
 
-/** @} */
 
 
-/** \name Prefix list basic routines */
-/** @{ */
+/** \name Prefix list basic routines
+ * @{ */
 #if UIP_CONF_ROUTER
+/** Adds a prefix.
+ *
+ * @param ipaddr
+ * @param length length of subnet prefix (bits)?
+ * @param advertise True, if the prefix should be advertised by the router (RA)?
+ * @param flags Flags
+ * @param vtime Valid lifetime
+ * @param ptime Preferred lifetime
+ */
 uip_ds6_prefix_t *uip_ds6_prefix_add(uip_ipaddr_t *ipaddr, uint8_t length,
                                      uint8_t advertise, uint8_t flags,
                                      unsigned long vtime,
@@ -265,34 +282,45 @@ void uip_ds6_prefix_rm(uip_ds6_prefix_t *prefix);
 uip_ds6_prefix_t *uip_ds6_prefix_lookup(uip_ipaddr_t *ipaddr,
                                         uint8_t ipaddrlen);
 uint8_t uip_ds6_is_addr_onlink(uip_ipaddr_t *ipaddr);
-
 /** @} */
 
-/** \name Unicast address list basic routines */
-/** @{ */
+/** \name Unicast address list basic routines
+ * @{ */
 uip_ds6_addr_t *uip_ds6_addr_add(uip_ipaddr_t *ipaddr,
                                  unsigned long vlifetime, uint8_t type);
 void uip_ds6_addr_rm(uip_ds6_addr_t *addr);
+/** Lookup address list for ip
+ * @return address list entry for ip if present, otherwise ???
+ */
 uip_ds6_addr_t *uip_ds6_addr_lookup(uip_ipaddr_t *ipaddr);
+/**
+ * Get a link-local address
+ * @param state -1 => any address is ok. 
+ * Otherwise state = desired state of addr (ADDR_TENTATIVE, ADDR_PREFERRED, ADDR_DEPRECATED).
+ * @return link-local address list entry
+ */
 uip_ds6_addr_t *uip_ds6_get_link_local(int8_t state);
+/**
+ * Get a global address
+ * @param state -1 => any address is ok. 
+ * Otherwise state = desired state of addr (ADDR_TENTATIVE, ADDR_PREFERRED, ADDR_DEPRECATED).
+ * @return global address list entry
+ */
 uip_ds6_addr_t *uip_ds6_get_global(int8_t state);
-
 /** @} */
 
-/** \name Multicast address list basic routines */
-/** @{ */
+/** \name Multicast address list basic routines
+  * @{ */
 uip_ds6_maddr_t *uip_ds6_maddr_add(const uip_ipaddr_t *ipaddr);
 void uip_ds6_maddr_rm(uip_ds6_maddr_t *maddr);
 uip_ds6_maddr_t *uip_ds6_maddr_lookup(const uip_ipaddr_t *ipaddr);
-
 /** @} */
 
-/** \name Anycast address list basic routines */
-/** @{ */
+/** \name Anycast address list basic routines
+ * @{ */
 uip_ds6_aaddr_t *uip_ds6_aaddr_add(uip_ipaddr_t *ipaddr);
 void uip_ds6_aaddr_rm(uip_ds6_aaddr_t *aaddr);
 uip_ds6_aaddr_t *uip_ds6_aaddr_lookup(uip_ipaddr_t *ipaddr);
-
 /** @} */
 
 
@@ -331,9 +359,14 @@ uint32_t uip_ds6_compute_reachable_time(void); /** \brief compute random reachab
 
 /** \name Macros to check if an IP address (unicast, multicast or anycast) is mine */
 /** @{ */
+/** Checks if IP address is mine. */
 #define uip_ds6_is_my_addr(addr)  (uip_ds6_addr_lookup(addr) != NULL)
+/** Checks if IP multicaste address is mine. */
 #define uip_ds6_is_my_maddr(addr) (uip_ds6_maddr_lookup(addr) != NULL)
+/** Checks if IP anycast address is mine. */
 #define uip_ds6_is_my_aaddr(addr) (uip_ds6_aaddr_lookup(addr) != NULL)
+/** @} */
+
 /** @} */
 /** @} */
 

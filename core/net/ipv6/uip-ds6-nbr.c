@@ -35,12 +35,11 @@
  */
 
 /**
- * \file
- *         IPv6 Neighbor cache (link-layer/IPv6 address mapping)
+ * \file IPv6 Neighbor cache (link-layer/IPv6 address mapping)
+ *
  * \author Mathilde Durvy <mdurvy@cisco.com>
  * \author Julien Abeille <jabeille@cisco.com>
  * \author Simon Duquennoy <simonduq@sics.se>
- *
  */
 
 #include <string.h>

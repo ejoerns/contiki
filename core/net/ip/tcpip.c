@@ -30,10 +30,9 @@
  */
 
 /**
- * \file
- *         Code for tunnelling uIP packets over the Rime mesh routing module
+ * \file Code for tunnelling uIP packets over the Rime mesh routing module
  *
- * \author  Adam Dunkels <adam@sics.se>\author
+ * \author  Adam Dunkels <adam@sics.se>
  * \author  Mathilde Durvy <mdurvy@cisco.com> (IPv6 related code)
  * \author  Julien Abeille <jabeille@cisco.com> (IPv6 related code)
  */

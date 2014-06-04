@@ -1,8 +1,3 @@
-/**
- * \addtogroup uip6
- * @{
- */
-
 /*
  * Copyright (c) 2013, Swedish Institute of Computer Science.
  * All rights reserved.
@@ -35,13 +30,26 @@
  */
 
 /**
- * \file
- *         IPv6 Neighbor cache (link-layer/IPv6 address mapping)
+ * \file IPv6 Neighbor cache (link-layer/IPv6 address mapping)
+ *
  * \author Mathilde Durvy <mdurvy@cisco.com>
  * \author Julien Abeille <jabeille@cisco.com>
  * \author Simon Duquennoy <simonduq@sics.se>
- *
  */
+
+/**
+ * \addtogroup uip6
+ * @{
+ */
+
+/** @defgroup uip_ds6_nbr IPv6 Neighbor cache (link-layer/IPv6 address mapping)
+ *
+ * Data structure and methods for IPv6 Neighbor Cache (RFC 4861, section 5.1)
+ *
+ * \author Mathilde Durvy <mdurvy@cisco.com>
+ * \author Julien Abeille <jabeille@cisco.com>
+ * \author Simon Duquennoy <simonduq@sics.se>
+ * @{ */
 
 #ifndef UIP_DS6_NEIGHBOR_H_
 #define UIP_DS6_NEIGHBOR_H_
@@ -54,15 +62,17 @@
 
 #if UIP_CONF_IPV6_QUEUE_PKT
 #include "net/ip/uip-packetqueue.h"
-#endif                          /*UIP_CONF_QUEUE_PKT */
+#endif /* UIP_CONF_IPV6_QUEUE_PKT */
 
 /*--------------------------------------------------*/
-/** \brief Possible states for the nbr cache entries */
+/** \name Possible states for the nbr cache entries
+ * @{ */
 #define  NBR_INCOMPLETE 0
-#define  NBR_REACHABLE 1
-#define  NBR_STALE 2
-#define  NBR_DELAY 3
-#define  NBR_PROBE 4
+#define  NBR_REACHABLE  1
+#define  NBR_STALE      2
+#define  NBR_DELAY      3
+#define  NBR_PROBE      4
+/** @} */
 
 NBR_TABLE_DECLARE(ds6_neighbors);
 
@@ -77,34 +87,78 @@ typedef struct uip_ds6_nbr {
 #if UIP_CONF_IPV6_QUEUE_PKT
   struct uip_packetqueue_handle packethandle;
 #define UIP_DS6_NBR_PACKET_LIFETIME CLOCK_SECOND * 4
-#endif                          /*UIP_CONF_QUEUE_PKT */
+#endif /* UIP_CONF_IPV6_QUEUE_PKT */
 } uip_ds6_nbr_t;
 
+/** Initialize neighbor cache. */
 void uip_ds6_neighbors_init(void);
 
-/** \brief Neighbor Cache basic routines */
+/** \name Neighbor Cache basic routines
+ *
+ * @{ */
+/** Adds a neighbor to the neighbor cache. 
+ *
+ * @param ipaddr IP address of the neighbor to add.
+ * @param lladdr Link-local address of the neighbor (may be unknown when added),
+ *        NULL if not known (requires state to be set to NBR_INCOMPLETE)
+ * @param isrouter Set to 1 if neighbor is a router,
+ *        to 0 if host or unknown
+ * @param state State of this entry.
+ *        Possible values are:
+ *        \ref NBR_INCOMPLETE,
+ *        \ref NBR_REACHABLE,
+ *        \ref NBR_STALE,
+ *        \ref NBR_DELAY,
+ *        \ref NBR_PROBE
+ */
 uip_ds6_nbr_t *uip_ds6_nbr_add(const uip_ipaddr_t *ipaddr, const uip_lladdr_t *lladdr,
                                uint8_t isrouter, uint8_t state);
+/** Removes entry from neighbor cache.
+ */
 void uip_ds6_nbr_rm(uip_ds6_nbr_t *nbr);
+/** Returns link-local address of neighbor.
+ */
 const uip_lladdr_t *uip_ds6_nbr_get_ll(const uip_ds6_nbr_t *nbr);
+/** Returns IP address of neighbor.
+ */
 const uip_ipaddr_t *uip_ds6_nbr_get_ipaddr(const uip_ds6_nbr_t *nbr);
+/** Lookup if a neighbor cache entry for given IP address exists.
+ *
+ * @param ipaddr IP address to look up
+ * @return NULL if no entry was found,
+ *        otherwise a pointer to that entry
+ */
 uip_ds6_nbr_t *uip_ds6_nbr_lookup(const uip_ipaddr_t *ipaddr);
+/** Lookup if a neighbor cache entry for given link-layer address exists.
+ *
+ * @param llpaddr link-layer address to look up
+ * @return NULL if no entry was found,
+ *        otherwise a pointer to that entry
+ */
 uip_ds6_nbr_t *uip_ds6_nbr_ll_lookup(const uip_lladdr_t *lladdr);
+/** Returns IP address associated with link-local address, based on neighbor cache entry. */
 uip_ipaddr_t *uip_ds6_nbr_ipaddr_from_lladdr(const uip_lladdr_t *lladdr);
+/** Returns link-layer address associated with IP address, based on neighbor cache entry. */
 const uip_lladdr_t *uip_ds6_nbr_lladdr_from_ipaddr(const uip_ipaddr_t *ipaddr);
+/** ? */
 void uip_ds6_link_neighbor_callback(int status, int numtx);
+/** ? */
 void uip_ds6_neighbor_periodic(void);
+/** ? */
 int uip_ds6_nbr_num(void);
 
 /**
  * \brief
- *     This searches inside the neighbor table for the neighbor that is about to
- *     expire the next.
+ * This searches inside the neighbor table for the neighbor that is about to
+ * expire the next.
  *
- * \return
- *     A reference to the neighbor about to expire the next or NULL if
- *     table is empty.
+ * @return
+ * A reference to the neighbor about to expire the next or NULL if
+ * table is empty.
  */
 uip_ds6_nbr_t *uip_ds6_get_least_lifetime_neighbor(void);
+/** @} */
+
+/** @} */
 
 #endif /* UIP_DS6_NEIGHBOR_H_ */

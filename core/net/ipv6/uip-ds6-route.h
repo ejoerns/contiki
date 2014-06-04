@@ -29,12 +29,24 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
+/**
+ * \addtogroup uip6
+ * @{
+ */
+
+/**
+ * @defgroup uip_ds6_routing Routing
+ *
+ * @{ */
+
 #ifndef UIP_DS6_ROUTE_H
 #define UIP_DS6_ROUTE_H
 
 #include "sys/stimer.h"
 #include "lib/list.h"
 
+/** Initialize routing. */
 void uip_ds6_route_init(void);
 
 #ifndef UIP_CONF_UIP_DS6_NOTIFICATIONS
@@ -132,29 +144,48 @@ typedef struct uip_ds6_defrt {
 
 /** \name Default router list basic routines */
 /** @{ */
+/** Add default router. */
 uip_ds6_defrt_t *uip_ds6_defrt_add(uip_ipaddr_t *ipaddr,
                                    unsigned long interval);
+/** Remove default router. */
 void uip_ds6_defrt_rm(uip_ds6_defrt_t *defrt);
+/** Lookup default router for address. */
 uip_ds6_defrt_t *uip_ds6_defrt_lookup(uip_ipaddr_t *ipaddr);
+/** ? */
 uip_ipaddr_t *uip_ds6_defrt_choose(void);
-
+/** ? */
 void uip_ds6_defrt_periodic(void);
+/** Returns head of the router list */
+uip_ds6_defrt_t *uip_ds6_defrt_head(void);
+/** Returns next item in the router list */
+uip_ds6_defrt_t *uip_ds6_defrt_next(uip_ds6_defrt_t *);
 /** @} */
 
 
 /** \name Routing Table basic routines */
 /** @{ */
+/** Lookup route for address. */
 uip_ds6_route_t *uip_ds6_route_lookup(uip_ipaddr_t *destipaddr);
+/** Add route for address. */
 uip_ds6_route_t *uip_ds6_route_add(uip_ipaddr_t *ipaddr, uint8_t length,
                                    uip_ipaddr_t *next_hop);
+/** Remove route. */
 void uip_ds6_route_rm(uip_ds6_route_t *route);
+/** */
 void uip_ds6_route_rm_by_nexthop(uip_ipaddr_t *nexthop);
-
+/** */
 uip_ipaddr_t *uip_ds6_route_nexthop(uip_ds6_route_t *);
+/** Number of routes? */
 int uip_ds6_route_num_routes(void);
+/** Returns head of the router list */
 uip_ds6_route_t *uip_ds6_route_head(void);
+/** Returns next item in the router list */
 uip_ds6_route_t *uip_ds6_route_next(uip_ds6_route_t *);
 
 /** @} */
 
+/** @} */
+/** @} */
+
 #endif /* UIP_DS6_ROUTE_H */
+

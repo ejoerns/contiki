@@ -1,15 +1,3 @@
-/**
- * \addtogroup uip6
- * @{
- */
-
-/**
- * \file
- *         Neighbor discovery (RFC 4861)
- * \author Julien Abeille <jabeille@cisco.com>
- * \author Mathilde Durvy <mdurvy@cisco.com>
- */
-
 /*
  * Copyright (c) 2006, Swedish Institute of Computer Science.
  * All rights reserved.
@@ -41,6 +29,25 @@
  * This file is part of the Contiki operating system.
  *
  */
+
+/**
+ * \addtogroup uip6
+ * @{
+ */
+
+/**
+ * \file Neighbor discovery (RFC 4861)
+ *
+ * \author Julien Abeille <jabeille@cisco.com>
+ * \author Mathilde Durvy <mdurvy@cisco.com>
+ */
+
+/**
+ * \defgroup uip_nd6 Neighbor discovery (RFC 4861)
+ *
+ * \author Julien Abeille <jabeille@cisco.com>
+ * \author Mathilde Durvy <mdurvy@cisco.com>
+ * @{ */
 
 #ifndef UIP_ND6_H_
 #define UIP_ND6_H_
@@ -100,7 +107,8 @@
 #define UIP_ND6_DEF_MAXDADNS UIP_CONF_ND6_DEF_MAXDADNS
 #endif /* UIP_CONF_ND6_DEF_MAXDADNS */
 
-/** \name RFC 4861 Node constant */
+/** \name RFC 4861 Node constant 
+ * @{ */
 #define UIP_ND6_MAX_MULTICAST_SOLICIT  3
 
 #ifdef UIP_CONF_ND6_MAX_UNICAST_SOLICIT
@@ -129,7 +137,9 @@
 
 /** \name ND6 option types */
 /** @{ */
+/** Source Link-Layer Address Option */
 #define UIP_ND6_OPT_SLLAO               1
+/** Target Link-Layer Address Option */
 #define UIP_ND6_OPT_TLLAO               2
 #define UIP_ND6_OPT_PREFIX_INFO         3
 #define UIP_ND6_OPT_REDIRECTED_HDR      4
@@ -141,6 +151,7 @@
 #define UIP_ND6_OPT_TYPE_OFFSET         0
 #define UIP_ND6_OPT_LEN_OFFSET          1
 #define UIP_ND6_OPT_DATA_OFFSET         2
+/** @} */
 
 /** \name ND6 message length (excluding options) */
 /** @{ */
