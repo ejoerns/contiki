@@ -671,6 +671,21 @@ periodic_prints(void)
       }
       if (!any) PRINTA("  <none>\n");
 
+      PRINTA("\nDef. Routes [%u max]\n",UIP_DS6_DEFRT_NB);
+      uip_ds6_defrt_t *dr;
+      any = 0;
+      for(dr = uip_ds6_defrt_head();
+          dr != NULL;
+          dr = uip_ds6_defrt_next(dr)) {
+        PRINTA("  ");
+        uip_debug_ipaddr_print(&dr->ipaddr);
+        //PRINTA("/%u (via ", dr->length);
+        //uip_debug_ipaddr_print(uip_ds6_route_nexthop(dr));
+        PRINTA(" %lus\n", dr->lifetime);
+        any = 1;
+      }
+      if (!any) PRINTA("  <none>\n");
+
       PRINTA("\nRoutes [%u max]\n",UIP_DS6_ROUTE_NB);
       uip_ds6_route_t *r;
       any = 0;
