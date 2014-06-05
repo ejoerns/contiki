@@ -35,7 +35,6 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.JPanel;
 import org.apache.log4j.Logger;
-import org.jdom.Element;
 
 import org.contikios.cooja.*;
 import org.contikios.cooja.contikimote.ContikiMoteInterface;
@@ -43,7 +42,7 @@ import org.contikios.cooja.interfaces.LEDInterface;
 import org.contikios.cooja.interfaces.PolledAfterActiveTicks;
 
 /**
- * LEDs mote interface.
+ * LEDInterfaces mote interface.
  *
  * Contiki variables:
  * <ul>
@@ -56,8 +55,8 @@ import org.contikios.cooja.interfaces.PolledAfterActiveTicks;
  * <li>leds_interface
  * </ul>
  * <p>
- *
- * This observable notifies when any LED changes.
+
+ This observable notifies when any LEDInterface changes.
  *
  * @author Fredrik Osterlind
  */
@@ -68,22 +67,8 @@ public class ContikiLED extends LEDInterface implements ContikiMoteInterface, Po
   private SectionMoteMemory moteMem = null;
   private byte currentLedValue = 0;
 
-  private static final byte LEDS_GREEN = 1;
-  private static final byte LEDS_YELLOW = 2;
-  private static final byte LEDS_RED = 4;
-
-  private static final Color DARK_GREEN = new Color(0, 50, 0);
-  private static final Color DARK_YELLOW = new Color(50, 50, 0);
-  private static final Color DARK_RED = new Color(50, 0, 0);
-  private static final Color GREEN = new Color(0, 255, 0);
-  private static final Color YELLOW = new Color(255, 255, 0);
-  private static final Color RED = new Color(255, 0, 0);
-
-  public ContikiLED() {
-  }
-
   /**
-   * Creates an interface to LEDs at mote.
+   * Creates an interface to LEDInterfaces at mote.
    *
    * @param mote Mote
    *
@@ -99,98 +84,40 @@ public class ContikiLED extends LEDInterface implements ContikiMoteInterface, Po
     return new String[]{"leds_interface"};
   }
 
+  LED[] leds = new LED[] {
+    new LED(Color.GREEN),
+    new LED(Color.YELLOW),
+    new LED(Color.RED)
+  };
+
+  @Override
+  public LED[] getLEDs() {
+    return leds;
+  }
+
+  @Override
+  public LED getLED(int idx) {
+    return leds[idx];
+  }
+
   public boolean isAnyOn() {
     return currentLedValue > 0;
-  }
-
-  public boolean isGreenOn() {
-    return (currentLedValue & LEDS_GREEN) > 0;
-  }
-
-  public boolean isYellowOn() {
-    return (currentLedValue & LEDS_YELLOW) > 0;
-  }
-
-  public boolean isRedOn() {
-    return (currentLedValue & LEDS_RED) > 0;
   }
 
   public void doActionsAfterTick() {
     boolean ledChanged;
 
     byte newLedsValue = moteMem.getByteValueOf("simLedsValue");
-    if (newLedsValue != currentLedValue) {
-      ledChanged = true;
-    } else {
-      ledChanged = false;
-    }
+    ledChanged = newLedsValue != currentLedValue;
 
     currentLedValue = newLedsValue;
     if (ledChanged) {
+      for (int idx = 0; idx < leds.length; idx++) {
+        leds[idx].on = (currentLedValue & (1 << idx)) > 0;
+      }
       this.setChanged();
       this.notifyObservers(mote);
     }
-  }
-
-  public JPanel getInterfaceVisualizer() {
-    final JPanel panel = new JPanel() {
-      public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        int x = 20;
-        int y = 25;
-        int d = 25;
-
-        if (isGreenOn()) {
-          g.setColor(GREEN);
-          g.fillOval(x, y, d, d);
-          g.setColor(Color.BLACK);
-          g.drawOval(x, y, d, d);
-        } else {
-          g.setColor(DARK_GREEN);
-          g.fillOval(x + 5, y + 5, d-10, d-10);
-        }
-
-        x += 40;
-
-        if (isRedOn()) {
-          g.setColor(RED);
-          g.fillOval(x, y, d, d);
-          g.setColor(Color.BLACK);
-          g.drawOval(x, y, d, d);
-        } else {
-          g.setColor(DARK_RED);
-          g.fillOval(x + 5, y + 5, d-10, d-10);
-        }
-
-        x += 40;
-
-        if (isYellowOn()) {
-          g.setColor(YELLOW);
-          g.fillOval(x, y, d, d);
-          g.setColor(Color.BLACK);
-          g.drawOval(x, y, d, d);
-        } else {
-          g.setColor(DARK_YELLOW);
-          g.fillOval(x + 5, y + 5, d-10, d-10);
-        }
-      }
-    };
-
-    Observer observer;
-    this.addObserver(observer = new Observer() {
-      public void update(Observable obs, Object obj) {
-        panel.repaint();
-      }
-    });
-
-    // Saving observer reference for releaseInterfaceVisualizer
-    panel.putClientProperty("intf_obs", observer);
-
-    panel.setMinimumSize(new Dimension(140, 60));
-    panel.setPreferredSize(new Dimension(140, 60));
-
-    return panel;
   }
 
   public void releaseInterfaceVisualizer(JPanel panel) {
@@ -201,23 +128,6 @@ public class ContikiLED extends LEDInterface implements ContikiMoteInterface, Po
     }
 
     this.deleteObserver(observer);
-  }
-
-  public Collection<Element> getConfigXML() {
-    return null;
-  }
-
-  public void setConfigXML(Collection<Element> configXML, boolean visAvailable) {
-  }
-
-  @Override
-  public LED[] getLEDs() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public LED getLED(int idx) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 }
