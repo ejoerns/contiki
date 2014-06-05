@@ -222,7 +222,8 @@ public class Exp5438MoteType extends MspMoteType {
     return new File(parentDir, sourceNoExtension + ".exp5438");
   }
 
-  protected String getTargetName() {
+  @Override
+  public String getContikiTarget() {
   	return "exp5438";
   }
 

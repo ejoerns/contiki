@@ -62,7 +62,8 @@ public class RavenMoteType extends AvroraMoteType {
     return ("Raven");
   }
   // The returned string is used for firmware file extension
-  public final String getMoteContikiTarget() {
+  @Override
+  public final String getContikiTarget() {
     return ("avr-raven");
   }
 

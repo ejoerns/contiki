@@ -66,7 +66,7 @@ public class IngaMoteType extends AvroraMoteType {
   }
   // The returned string is used for firmware file extension
   @Override
-  public final String getMoteContikiTarget() {
+  public final String getContikiTarget() {
     return ("inga");
   }
 

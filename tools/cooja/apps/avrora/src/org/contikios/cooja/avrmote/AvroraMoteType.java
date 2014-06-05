@@ -67,7 +67,6 @@ public abstract class AvroraMoteType extends AbstractMoteType implements MoteTyp
   protected Simulation simulation;
 
   public abstract String getMoteName();
-  public abstract String getMoteContikiTarget();
 
   @Override
   public abstract Mote generateMote(Simulation simulation);
@@ -187,7 +186,7 @@ public abstract class AvroraMoteType extends AbstractMoteType implements MoteTyp
   public File getExpectedFirmwareFile(File source) {
     File parentDir = source.getParentFile();
     String sourceNoExtension = source.getName().substring(0, source.getName().length()-2);
-    return new File(parentDir, sourceNoExtension + "." + getMoteContikiTarget());
+    return new File(parentDir, sourceNoExtension + "." + getContikiTarget());
   }
 
   @Override

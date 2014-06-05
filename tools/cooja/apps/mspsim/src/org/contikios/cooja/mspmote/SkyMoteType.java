@@ -233,7 +233,8 @@ public class SkyMoteType extends MspMoteType {
     return new File(parentDir, sourceNoExtension + ".sky");
   }
 
-  protected String getTargetName() {
+  @Override
+  public String getContikiTarget() {
   	return "sky";
   }
 

@@ -164,7 +164,8 @@ public class Exp2420MoteType extends Exp5438MoteType {
     return new File(parentDir, sourceNoExtension + ".exp2420");
   }
 
-  protected String getTargetName() {
+  @Override
+  public String getContikiTarget() {
   	return "exp2420";
   }
 

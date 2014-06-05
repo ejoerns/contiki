@@ -66,7 +66,7 @@ public class AvrCompileDialog extends AbstractCompileDialog {
     if (file.getName().endsWith(".elf")) {
       return true;
     }
-    if (file.getName().endsWith("." + ((AvroraMoteType)moteType).getMoteContikiTarget())) {
+    if (file.getName().endsWith("." + ((AvroraMoteType)moteType).getContikiTarget())) {
       return true;
     }
     return false;
@@ -76,7 +76,7 @@ public class AvrCompileDialog extends AbstractCompileDialog {
     /* TODO Split into String[] */
     return
     /*"make clean TARGET=<target>\n" + */
-    Cooja.getExternalToolsSetting("PATH_MAKE") + " " + getExpectedFirmwareFile(source).getName() + " TARGET=" + ((AvroraMoteType)moteType).getMoteContikiTarget();
+    Cooja.getExternalToolsSetting("PATH_MAKE") + " " + getExpectedFirmwareFile(source).getName() + " TARGET=" + ((AvroraMoteType)moteType).getContikiTarget();
   }
 
   public File getExpectedFirmwareFile(File source) {
@@ -88,7 +88,7 @@ public class AvrCompileDialog extends AbstractCompileDialog {
   }
 
   protected String getTargetName() {
-  	return ((AvroraMoteType)moteType).getMoteContikiTarget();
+  	return ((AvroraMoteType)moteType).getContikiTarget();
   }
 
   public Class<? extends MoteInterface>[] getDefaultMoteInterfaces() {

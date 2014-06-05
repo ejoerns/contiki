@@ -161,7 +161,8 @@ public class Trxeb2520MoteType extends Exp5438MoteType {
     return new File(parentDir, sourceNoExtension + ".trxeb2520");
   }
 
-  protected String getTargetName() {
+  @Override
+  public String getContikiTarget() {
   	return "trxeb2520";
   }
 

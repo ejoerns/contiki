@@ -82,6 +82,8 @@ public interface MoteType {
    */
   public void setIdentifier(String identifier);
 
+  public String getContikiTarget();
+  
   /**
    * Main Contiki source file of mote type.
    * May be null.

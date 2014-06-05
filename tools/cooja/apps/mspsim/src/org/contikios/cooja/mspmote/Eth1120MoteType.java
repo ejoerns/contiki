@@ -161,7 +161,8 @@ public class Eth1120MoteType extends Exp5438MoteType {
     return new File(parentDir, sourceNoExtension + ".eth1120");
   }
 
-  protected String getTargetName() {
+  @Override
+  public String getContikiTarget() {
   	return "eth1120";
   }
 

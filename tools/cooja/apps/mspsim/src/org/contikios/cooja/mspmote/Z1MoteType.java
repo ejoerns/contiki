@@ -64,6 +64,11 @@ public class Z1MoteType extends AbstractMspMoteType {
     protected String getMoteImage() {
         return "images/z1.jpg";
     }
+    
+    @Override
+    public String getContikiTarget() {
+      return "z1";
+    }
 
     @Override
     protected MspMote createMote(Simulation simulation) {

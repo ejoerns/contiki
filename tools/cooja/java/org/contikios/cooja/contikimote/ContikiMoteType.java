@@ -784,6 +784,11 @@ public class ContikiMoteType implements MoteType {
   }
 
   @Override
+  public String getContikiTarget() {
+    return "cooja";
+  }
+
+  @Override
   public File getContikiSourceFile() {
     return fileSource;
   }

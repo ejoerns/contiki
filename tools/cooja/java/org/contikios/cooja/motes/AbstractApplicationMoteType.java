@@ -127,6 +127,11 @@ public abstract class AbstractApplicationMoteType implements MoteType {
     this.description = description;
   }
 
+  @Override
+  public String getContikiTarget() {
+    return null;
+  }  
+
   public Class<? extends MoteInterface>[] getMoteInterfaceClasses() {
     return moteInterfaceClasses;
   }

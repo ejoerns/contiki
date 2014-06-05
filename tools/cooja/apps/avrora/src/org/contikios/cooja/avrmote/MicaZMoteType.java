@@ -62,7 +62,7 @@ public class MicaZMoteType extends AvroraMoteType {
     return ("MicaZ");
   }
   // The returned string is used for firmware file extension
-  public final String getMoteContikiTarget() {
+  public final String getContikiTarget() {
     return ("micaz");
   }
 

@@ -205,7 +205,8 @@ public class TyndallMoteType extends MspMoteType {
     return new File(parentDir, sourceNoExtension + ".tyndall");
   }
 
-  protected String getTargetName() {
+  @Override
+  public String getContikiTarget() {
   	return "tyndall";
   }
 

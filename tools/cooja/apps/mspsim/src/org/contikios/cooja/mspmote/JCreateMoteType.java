@@ -64,6 +64,11 @@ public class JCreateMoteType extends AbstractMspMoteType {
     protected String getMoteImage() {
         return "images/jcreate.jpg";
     }
+    
+    @Override
+    public String getContikiTarget() {
+      return "z1";
+    }
 
     @Override
     protected MspMote createMote(Simulation simulation) {

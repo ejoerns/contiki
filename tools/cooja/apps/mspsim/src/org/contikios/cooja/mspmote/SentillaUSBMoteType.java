@@ -63,6 +63,11 @@ public class SentillaUSBMoteType extends AbstractMspMoteType {
     protected String getMoteImage() {
         return "images/sentilla-usb.jpg";
     }
+    
+    @Override
+    public String getContikiTarget() {
+      return "sentilla-usb";
+    }
 
     @Override
     protected MspMote createMote(Simulation simulation) {

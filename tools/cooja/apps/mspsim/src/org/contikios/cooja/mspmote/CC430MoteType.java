@@ -205,7 +205,8 @@ public class CC430MoteType extends MspMoteType {
     return new File(parentDir, sourceNoExtension + ".cc430");
   }
 
-  protected String getTargetName() {
+  @Override
+  public String getContikiTarget() {
   	return "cc430";
   }
 

@@ -63,6 +63,11 @@ public class WismoteMoteType extends AbstractMspMoteType {
     protected String getMoteImage() {
         return "images/wismote.jpg";
     }
+    
+    @Override
+    public String getContikiTarget() {
+      return "wismote";
+    }
 
     @Override
     protected MspMote createMote(Simulation simulation) {

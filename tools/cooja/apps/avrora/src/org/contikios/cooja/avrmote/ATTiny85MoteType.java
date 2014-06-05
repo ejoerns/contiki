@@ -60,7 +60,7 @@ public class ATTiny85MoteType extends AvroraMoteType {
     return ("Tiny85");
   }
   // The returned string is used for firmware file extension
-  public final String getMoteContikiTarget() {
+  public final String getContikiTarget() {
     return ("tiny85");
   }
 
