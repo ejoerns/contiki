@@ -31,16 +31,8 @@
 package org.contikios.cooja.avrmote.interfaces;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.util.Collection;
-import java.util.Observable;
-import java.util.Observer;
-
-import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
-import org.jdom.Element;
 
 import org.contikios.cooja.ClassDescription;
 import org.contikios.cooja.Mote;
@@ -51,120 +43,64 @@ import avrora.sim.FiniteStateMachine;
 /**
  * @author Joakim Eriksson
  * @author David Kopf
+ * @author Enrico Jorns
  */
 @ClassDescription("LEDs")
 public class AvroraLED extends LEDInterface {
-  private static Logger logger = Logger.getLogger(AvroraLED.class);
+  private static final Logger logger = Logger.getLogger(AvroraLED.class);
 
-  private avrora.sim.FiniteStateMachine.Probe[] ledProbes = {null, null, null, null};
+//  private avrora.sim.FiniteStateMachine.Probe[] ledProbes = {null, null, null, null};
   private avrora.sim.platform.LED.LEDGroup leds;
 
-  private boolean probesInserted = false;
-  private boolean[] ledOn = {false, false, false, false};
-  private int[] ledMap = new int[4];
-
-  private static final int LED_RED = 0;
-  private static final int LED_GREEN = 1;
-  private static final int LED_BLUE = 2;
-  private static final int LED_YELLOW = 3;
-
-  private static final Color DARK_BLUE = new Color(0, 0, 100);
-  private static final Color DARK_GREEN = new Color(0, 100, 0);
-  private static final Color DARK_RED = new Color(100, 0, 0);
-  private static final Color DARK_YELLOW = new Color(130, 100, 0);
-  private static final Color BLUE = new Color(0, 0, 255);
-  private static final Color GREEN = new Color(0, 255, 0);
-  private static final Color RED = new Color(255, 0, 0);
-  private static final Color YELLOW = new Color(220, 200, 0);
+//  private boolean probesInserted = false;
+  private LED[] ledMap;
 
   public AvroraLED(Mote mote) {
     leds = (avrora.sim.platform.LED.LEDGroup) ((AvroraMote)mote).getPlatform().getDevice("leds");
+    ledMap = new LED[leds.leds.length];
 
     int index = 0;
     for ( avrora.sim.platform.LED led : leds.leds) {
+      // Map Avrora color notation to awt Color
       switch (led.color) {
         case "Red":
-          ledMap[index++] = LED_RED;
+          ledMap[index] = new LED(Color.RED);
           break;
         case "Green":
-          ledMap[index++] = LED_GREEN;
+          ledMap[index] = new LED(Color.GREEN);
           break;
         case "Blue":
-          ledMap[index++] = LED_BLUE;
+          ledMap[index] = new LED(Color.BLUE);
           break;
         case "Yellow":
-          
-          ledMap[index++] = LED_YELLOW;
-          //ledMap[index++] = LED_BLUE;  //make blue for cooja timeline
+          ledMap[index] = new LED(Color.YELLOW);
+          break;
+        case "Orange":
+          ledMap[index] = new LED(Color.ORANGE);
           break;
         default:
-          logger.debug("LED " + led.color + " not available");
+          logger.warn("Color " + led.color + " not available");
           break;
       }
-        if (index > 3) {
-            logger.debug(" Ignoring extra LEDs ");
-             break;
+      
+      final int idxParam = index;
+      led.getFSM().insertProbe(new FiniteStateMachine.Probe() {
+        @Override
+        public void fireBeforeTransition(int beforeState, int afterState) {
         }
+
+        @Override
+        public void fireAfterTransition(int beforeState, int afterState) {
+          ledMap[idxParam].on = afterState > 0;
+          setChanged();
+          notifyObservers();
+        }
+      });
+      
+      index++;
     }
 
-    if (index-- >=0) {
-        ledProbes[0] = new FiniteStateMachine.Probe() {
-          @Override
-          public void fireAfterTransition(int old, int newstate) {
-            ledOn[ledMap[0]] = newstate > 0;
-            setChanged();
-            notifyObservers();
-          }
-          @Override
-          public void fireBeforeTransition(int arg0, int arg1) {
-          }
-        };
-    }
-    if (index-- >=0) {
-        ledProbes[1] = new FiniteStateMachine.Probe() {
-          @Override
-          public void fireAfterTransition(int old, int newstate) {
-            ledOn[ledMap[1]] = newstate > 0;
-            setChanged();
-            notifyObservers();
-          }
-          @Override
-          public void fireBeforeTransition(int arg0, int arg1) {
-          }
-        };
-    }
-    if (index-- >=0) {
-        ledProbes[2] = new FiniteStateMachine.Probe() {
-          @Override
-          public void fireAfterTransition(int old, int newstate) {
-            ledOn[ledMap[2]] = newstate > 0;
-            setChanged();
-            notifyObservers();
-          }
-          @Override
-          public void fireBeforeTransition(int arg0, int arg1) {
-          }
-        };
-    }
-    if (index-- >=0) {
-        ledProbes[3] = new FiniteStateMachine.Probe() {
-          @Override
-          public void fireAfterTransition(int old, int newstate) {
-            ledOn[ledMap[3]] = newstate > 0;
-            setChanged();
-            notifyObservers();
-          }
-          @Override
-          public void fireBeforeTransition(int arg0, int arg1) {
-          }
-        };
-    }
-
-    //led probe always active for cooja timeline
-    for (int i = 0; i < leds.leds.length; i++) {
-        leds.leds[i].getFSM().insertProbe(ledProbes[i]);
-    }
-    probesInserted = true;
+//    probesInserted = true;
 
   }
 
@@ -176,125 +112,18 @@ public class AvroraLED extends LEDInterface {
 
   @Override
   public boolean isAnyOn() {
-    for (int i=0; i<4; i++) if (ledOn[i]) return true;
+    for (int i=0; i<4; i++) if (ledMap[i].on) return true;
     return false;
-  }
-
-  public boolean isblueOn() {
-   // return ledOn[LED_YELLOW]; //return state of yellow for timeline
-    return ledOn[LED_BLUE];
-  }
-
-  @Override
-  public JPanel getInterfaceVisualizer() {
-    final JPanel panel = new JPanel() {
-      @Override
-      public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-/*
-        if (!probesInserted) {
-            for (int i=0;i<leds.leds.length;i++) {
-                leds.leds[i].getFSM().insertProbe(ledProbes[i]);
-                ledOn[ledMap[i]] = leds.leds[i].getFSM().getCurrentState());
-            }
-            probesInserted = true;
-        }
-*/
-        int x = 20;
-        int y = 4;
-        int d = 25;
-        for (int i = 0; i < leds.leds.length; i++) {
-            if (ledOn[ledMap[i]]) {
-                switch (ledMap[i]) {
-                    case LED_BLUE:
-                      g.setColor(BLUE);
-                      break;
-                    case LED_GREEN:
-                      g.setColor(GREEN);
-                      break;
-                    case LED_RED:
-                      g.setColor(RED);
-                      break;
-                    case LED_YELLOW:
-                      g.setColor(YELLOW);
-                      break;
-                }
-                g.fillOval(x, y, d, d);
-                g.setColor(Color.BLACK);
-                g.drawOval(x, y, d, d);
-            } else {
-                switch (ledMap[i]) {
-                    case LED_BLUE:
-                      g.setColor(DARK_BLUE);
-                      break;
-                    case LED_GREEN:
-                      g.setColor(DARK_GREEN);
-                      break;
-                    case LED_RED:
-                      g.setColor(DARK_RED);
-                      break;
-                    case LED_YELLOW:
-                      g.setColor(DARK_YELLOW);
-                      break;
-                }
-                g.fillOval(x + 5, y + 5, d - 10, d - 10);
-            }
-            x += 40;
-        }
-      }
-    };
-
-    Observer observer;
-    this.addObserver(observer = new Observer() {
-      @Override
-      public void update(Observable obs, Object obj) {
-        panel.repaint();
-      }
-    });
-
-    // Saving observer reference for releaseInterfaceVisualizer
-    panel.putClientProperty("intf_obs", observer);
-
-    panel.setPreferredSize(new Dimension(140, 40));
-
-    return panel;
-  }
-
-  @Override
-  public void releaseInterfaceVisualizer(JPanel panel) {
-    Observer observer = (Observer) panel.getClientProperty("intf_obs");
-    if (observer == null) {
-      logger.fatal("Error when releasing panel, observer is null");
-      return;
-    }
-    //leave probes inserted for cooja timeline
-/*
-    for (int i=0;i<leds.leds.length;i++) {
-        leds.leds[i].getFSM().removeProbe(ledProbes[i]);
-    }
-    probesInserted = false;
-*/
-    this.deleteObserver(observer);
-  }
-
-
-  @Override
-  public Collection<Element> getConfigXML() {
-    return null;
-  }
-
-  @Override
-  public void setConfigXML(Collection<Element> configXML, boolean visAvailable) {
   }
 
   @Override
   public LED[] getLEDs() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return ledMap;
   }
 
   @Override
   public LED getLED(int idx) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return ledMap[idx];
   }
 
 }
