@@ -48,11 +48,12 @@ import org.contikios.cooja.plugins.Visualizer;
 import org.contikios.cooja.plugins.VisualizerSkin;
 
 /**
- * Visualizer skin for LEDs.
+ * Visualizer skin for LEDInterfaces.
  *
- * Paints three LEDs left to each mote.
+ * Paints three LEDInterfaces left to each mote.
  *
  * @author Fredrik Osterlind
+ * @author Enrico Jorns
  */
 @ClassDescription("LEDs")
 public class LEDVisualizerSkin implements VisualizerSkin {
@@ -105,11 +106,17 @@ public class LEDVisualizerSkin implements VisualizerSkin {
   public void paintBeforeMotes(Graphics g) {
   }
 
+  private static final int LED_Y_DISTANCE = 8;
+  private static final int LED_WIDTH = 8;
+  private static final int LED_HEIGHT = 5;
+  
+  private static final Color TRANSPARENT_COLOR = new Color(255, 255, 255, 128);
+
   public void paintAfterMotes(Graphics g) {
     /* Paint LEDs left of each mote */
     Mote[] allMotes = simulation.getMotes();
     for (Mote mote: allMotes) {
-      LEDInterface leds = mote.getInterfaces().getLED();
+      LEDInterface.LED[] leds = mote.getInterfaces().getLED().getLEDs();
       if (leds == null) {
         continue;
       }
@@ -117,30 +124,21 @@ public class LEDVisualizerSkin implements VisualizerSkin {
       Position pos = mote.getInterfaces().getPosition();
       Point pixel = visualizer.transformPositionToPixel(pos);
 
-      int x = pixel.x - 2*Visualizer.MOTE_RADIUS;
+      int x = pixel.x - Visualizer.MOTE_RADIUS - LED_WIDTH - 3;
+      int y = pixel.y - LED_HEIGHT / 2;
       
-      int y = pixel.y - Visualizer.MOTE_RADIUS;
-      g.setColor(Color.RED);
-      if (leds.isRedOn()) {
-        g.fillRect(x, y, 7, 4);
-      } else {
-        g.drawRect(x, y, 7, 4);
-      }
-
-      y += 6;
-      g.setColor(Color.GREEN);
-      if (leds.isGreenOn()) {
-        g.fillRect(x, y, 7, 4);
-      } else {
-        g.drawRect(x, y, 7, 4);
-      }
-
-      y += 6;
-      g.setColor(Color.BLUE);
-      if (leds.isYellowOn()) {
-        g.fillRect(x, y, 7, 4);
-      } else {
-        g.drawRect(x, y, 7, 4);
+      y -= (leds.length * LED_Y_DISTANCE / 2);
+      
+      for (LEDInterface.LED led : leds) {
+        g.setColor(TRANSPARENT_COLOR);
+        g.fillRect(x, y, LED_WIDTH, LED_HEIGHT);
+        g.setColor(led.color);
+        g.drawRect(x, y, LED_WIDTH, LED_HEIGHT);
+        if (led.on) {
+          g.setColor(led.color);
+          g.fillRect(x, y, LED_WIDTH, LED_HEIGHT);
+        }
+        y += LED_Y_DISTANCE;
       }
     }
   }
