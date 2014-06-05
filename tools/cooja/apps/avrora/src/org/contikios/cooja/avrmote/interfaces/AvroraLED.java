@@ -186,21 +186,6 @@ public class AvroraLED extends LEDInterface {
   }
 
   @Override
-  public boolean isGreenOn() {
-    return ledOn[LED_GREEN];
-  }
-
-  @Override
-  public boolean isRedOn() {
-    return ledOn[LED_RED];
-  }
-
-  @Override
-  public boolean isYellowOn()  {
-    return ledOn[LED_YELLOW];
-  }
-
-  @Override
   public JPanel getInterfaceVisualizer() {
     final JPanel panel = new JPanel() {
       @Override

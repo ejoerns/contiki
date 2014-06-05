@@ -72,22 +72,6 @@ public abstract class LEDInterface extends MoteInterface {
    * @return True if any LEDInterface is on, false otherwise
    */
   public abstract boolean isAnyOn();
-
-  /**
-   * @return True if green LED is on, false otherwise
-   */
-  public abstract boolean isGreenOn();
-
-  /**
-   * @return True if yellow LED is on, false otherwise
-   */
-  public abstract boolean isYellowOn();
-  
-  /**
-   * @return True if red LED is on, false otherwise
-   */
-  public abstract boolean isRedOn();
-    
   
   /**
    * Returns an array of all LEDs of a mote.

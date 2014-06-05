@@ -1060,6 +1060,7 @@ public class TimeLine extends VisPlugin implements HasQuickHelp {
   private void addMoteObservers(final Mote mote, final MoteEvents moteEvents) {
     /* LEDs */
     final LEDInterface moteLEDs = mote.getInterfaces().getLED();
+    /*
     if (moteLEDs != null) {
       LEDEvent startupEv = new LEDEvent(
           simulation.getSimulationTime(),
@@ -1083,7 +1084,7 @@ public class TimeLine extends VisPlugin implements HasQuickHelp {
 
       moteLEDs.addObserver(observer);
       activeMoteObservers.add(new MoteObservation(mote, moteLEDs, observer));
-    }
+    }*/
 
     /* Radio OnOff, RXTX, and channels */
     final Radio moteRadio = mote.getInterfaces().getRadio();

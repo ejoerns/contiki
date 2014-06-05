@@ -58,8 +58,8 @@ import org.contikios.cooja.interfaces.MoteAttributes;
 import org.contikios.cooja.interfaces.Position;
 import org.contikios.cooja.interfaces.RimeAddress;
 import org.contikios.cooja.mspmote.interfaces.ESBButton;
-import org.contikios.cooja.mspmote.interfaces.ESBLED;
 import org.contikios.cooja.mspmote.interfaces.MspClock;
+import org.contikios.cooja.mspmote.interfaces.MspLED;
 import org.contikios.cooja.mspmote.interfaces.MspMoteID;
 import org.contikios.cooja.mspmote.interfaces.MspSerial;
 import org.contikios.cooja.mspmote.interfaces.TR1001Radio;
@@ -208,7 +208,7 @@ public class ESBMoteType extends MspMoteType {
         IPAddress.class,
         MspSerial.class,
         MspClock.class,
-        ESBLED.class,
+        MspLED.class,
         ESBButton.class,
         MspMoteID.class,
         TR1001Radio.class,
