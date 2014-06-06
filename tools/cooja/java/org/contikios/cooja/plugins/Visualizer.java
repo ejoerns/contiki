@@ -162,11 +162,16 @@ public class Visualizer extends VisPlugin implements HasQuickHelp {
   private static final int MOVE_MASK = Event.SHIFT_MASK;
   
   enum MotesActionState {
-    UNKNWON,
+    NONE,
+    // press to select mote
     SELECT_PRESS,
+    // press
     DEFAULT_PRESS,
+    // press to start panning
     PAN_PRESS,
+    // panning the viewport
     PANNING,
+    // moving a mote
     MOVING,
     // rectangular select
     SELECTING
@@ -177,7 +182,7 @@ public class Visualizer extends VisPlugin implements HasQuickHelp {
   /* Mote that was under curser while mouse press */
   Mote cursorMote;
   
-  MotesActionState mouseActionState = MotesActionState.UNKNWON;
+  MotesActionState mouseActionState = MotesActionState.NONE;
   /* Position where mouse button was pressed */
   Position pressedPos;
   
@@ -1051,6 +1056,9 @@ public class Visualizer extends VisPlugin implements HasQuickHelp {
         repaint();
         break;
     }
+    /* Release always stops previous actions */
+    mouseActionState = MotesActionState.NONE;
+    canvas.setCursor(Cursor.getDefaultCursor());
     repaint();
   }
 
