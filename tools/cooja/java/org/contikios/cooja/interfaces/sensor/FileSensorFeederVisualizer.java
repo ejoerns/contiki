@@ -265,7 +265,7 @@ public class FileSensorFeederVisualizer extends AbstractSensorFeederVisualizer i
     private JComboBox channelInput;
 
     public FileChannelPanel(Channel ch) {
-      super(ManualSensorFeeder.class, ch);
+      super(FileSensorFeeder.class, ch);
     }
 
     @Override
