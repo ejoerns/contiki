@@ -128,6 +128,9 @@ public abstract class AbstractSensorFeederVisualizer extends JPanel {
         }
       });
 
+      childPanel.removeAll();
+      childPanel.add(getPanelContent(ch), BorderLayout.CENTER);
+      updatePanel();
     }
 
     /**
@@ -155,15 +158,13 @@ public abstract class AbstractSensorFeederVisualizer extends JPanel {
     abstract void updateContent(AbstractSensorFeeder.FeederParameter param);
 
     /**
-     * Set panel that holds content of the channel panel
+     * Implementation should return content for this channel panel.
+     * e.g. one or multiple input fields, a slider, labels, etc.
      *
-     * @param panel
+     * @param ch Channel this panel should be created for
+     * @return panel instance
      */
-    public void setContentPanel(JPanel panel) {
-      childPanel.removeAll();
-      childPanel.add(panel, BorderLayout.CENTER);
-      updatePanel();
-    }
+    public abstract JPanel getPanelContent(Channel ch);
 
     /**
      * Selects/deselects checkbox and enables/disables panel content

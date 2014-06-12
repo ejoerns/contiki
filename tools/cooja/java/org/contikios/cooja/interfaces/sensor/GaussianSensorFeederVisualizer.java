@@ -126,6 +126,10 @@ public class GaussianSensorFeederVisualizer extends AbstractSensorFeederVisualiz
 
     public GaussianChannelPanel(Channel ch) {
       super(GaussianSensorFeeder.class, ch);
+    }
+
+    @Override
+    public JPanel getPanelContent(Channel ch) {
       JPanel panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
       nf = DecimalFormat.getNumberInstance();
@@ -142,8 +146,8 @@ public class GaussianSensorFeederVisualizer extends AbstractSensorFeederVisualiz
       devInput.setText("1.0");
       devInput.setColumns(8);
       panel.add(devInput);
-      setContentPanel(panel);
 
+      return panel;
     }
 
     @Override

@@ -121,12 +121,16 @@ public class RandomSensorFeederVisualizer extends AbstractSensorFeederVisualizer
    */
   private static class RandomChannelPanel extends AbstractChannelPanel {
 
-    private final JFormattedTextField lboundInput;
-    private final JFormattedTextField uboundInput;
-    private final NumberFormat nf;
+    private JFormattedTextField lboundInput;
+    private JFormattedTextField uboundInput;
+    private NumberFormat nf;
 
     public RandomChannelPanel(Channel ch) {
       super(RandomSensorFeeder.class, ch);
+    }
+
+    @Override
+    public JPanel getPanelContent(Channel ch) {
       JPanel panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
       nf = DecimalFormat.getNumberInstance();
@@ -144,7 +148,6 @@ public class RandomSensorFeederVisualizer extends AbstractSensorFeederVisualizer
       uboundInput.setColumns(8);
       panel.add(uboundInput);
       panel.add(new JLabel("]"));
-      setContentPanel(panel);
 
       /* verify that lbound <= ubound */
       InputVerifier leqVerifier = new InputVerifier() {
@@ -166,6 +169,7 @@ public class RandomSensorFeederVisualizer extends AbstractSensorFeederVisualizer
       lboundInput.setInputVerifier(leqVerifier);
       uboundInput.setInputVerifier(leqVerifier);
 
+      return panel;
     }
 
     // XXX to interface
@@ -183,6 +187,7 @@ public class RandomSensorFeederVisualizer extends AbstractSensorFeederVisualizer
       lboundInput.setText(String.valueOf(rfparam.lbound));
       uboundInput.setText(String.valueOf(rfparam.ubound));
     }
+
   }
 
 }

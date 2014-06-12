@@ -262,17 +262,22 @@ public class FileSensorFeederVisualizer extends AbstractSensorFeederVisualizer i
    */
   private class FileChannelPanel extends AbstractChannelPanel {
 
-    private final JComboBox channelInput;
+    private JComboBox channelInput;
 
     public FileChannelPanel(Channel ch) {
       super(ManualSensorFeeder.class, ch);
+    }
+
+    @Override
+    public JPanel getPanelContent(Channel ch) {
       JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout(10, 0));
       panel.add(BorderLayout.CENTER, new JLabel("Data column"));
       channelInput = new JComboBox<>();
       channelInput.setEnabled(false); // enable initial as we do not have any data
       panel.add(BorderLayout.EAST, channelInput);
-      setContentPanel(panel);
+
+      return panel;
     }
 
     /**

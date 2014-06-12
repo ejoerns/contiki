@@ -114,12 +114,15 @@ public class ManualSensorFeederVisualizer extends AbstractSensorFeederVisualizer
    */
   private static class ManualChannelPanel extends AbstractChannelPanel {
 
-    private final JTextField channelInput;
-    private final NumberFormat nf;
+    private JTextField channelInput;
+    private NumberFormat nf;
 
     public ManualChannelPanel(Channel ch) {
       super(ManualSensorFeeder.class, ch);
-      
+    }
+
+    @Override
+    public JPanel getPanelContent(Channel ch) {
       JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout(10, 0));
       panel.add(BorderLayout.WEST, new JLabel("Value"));
@@ -128,9 +131,8 @@ public class ManualSensorFeederVisualizer extends AbstractSensorFeederVisualizer
       channelInput.setText(String.valueOf(ch.default_));
       channelInput.setColumns(10);
       panel.add(BorderLayout.CENTER, channelInput);
-      
-      setContentPanel(panel);
 
+      return panel;
     }
 
     @Override
