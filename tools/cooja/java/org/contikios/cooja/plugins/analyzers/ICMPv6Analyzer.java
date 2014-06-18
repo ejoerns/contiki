@@ -71,10 +71,10 @@ public class ICMPv6Analyzer extends PacketAnalyzer {
                 int dtsn = packet.get(9);
                 
                 verbose.append(" InstanceID: ").append(instanceID)
-                        .append(" Version: ").append(version)
-                        .append(" Rank:").append(rank)
-                        .append(" MOP: ").append(mop)
-                        .append(" DTSN: ").append(dtsn);
+                        .append(", Version: ").append(version)
+                        .append(", Rank: ").append(rank)
+                        .append(", MOP: ").append(mop)
+                        .append(", DTSN: ").append(dtsn);
                 packet.consumeBytesStart(8);
 
                 break;
