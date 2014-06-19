@@ -89,10 +89,10 @@ public class IPHCPacketAnalyzer extends PacketAnalyzer {
       case 0x01:
         hlim = 1;
         break;
-      case 0x10:
+      case 0x02:
         hlim = 64;
         break;
-      case 0x11:
+      case 0x03:
         hlim = 255;
         break;
     }
@@ -186,7 +186,7 @@ public class IPHCPacketAnalyzer extends PacketAnalyzer {
           ttl = 1;
           break;
         case SICSLOWPAN_IPHC_TTL_64:
-          ttl = 2;
+          ttl = 64;
           break;
         case SICSLOWPAN_IPHC_TTL_255:
           ttl = 255;
