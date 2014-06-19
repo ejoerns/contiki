@@ -416,6 +416,23 @@ public class IPHCPacketAnalyzer extends PacketAnalyzer {
               break;
           }
         }
+      } else {
+        // Skip extension header
+        // XXX TODO: Handle others, too?
+        if (proto == EXT_HDR_HOP_BY_HOP) {
+          proto = packet.get(hc06_ptr) & 0xFF;
+
+          // header length is length specified in field, rounded up to 64 bit
+          int hdr_len = ((packet.get(hc06_ptr + 1) / 8) + 1) * 8;
+          hc06_ptr += hdr_len;
+
+          // UDP hadling
+          if (proto == PROTO_UDP) {
+            srcPort = packet.getInt(hc06_ptr, 2) & 0xFFFF;
+            destPort = packet.getInt(hc06_ptr + 2, 2) & 0xFFFF;
+            hc06_ptr += 4;
+          }
+        }
       }
 
 //        /* IP length field. */
