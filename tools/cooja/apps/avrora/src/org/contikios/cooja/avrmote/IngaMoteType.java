@@ -51,7 +51,7 @@ import org.contikios.cooja.interfaces.RimeAddress;
 
 
 /**
- * AVR-based Raven mote types emulated in Avrora.
+ * AVR-based Inga sensormote types emulated in Avrora.
  *
  * @author Joakim Eriksson, Fredrik Osterlind, David Kopf, Sebastian Willenborg
  */
@@ -62,7 +62,7 @@ public class IngaMoteType extends AvroraMoteType {
   // The returned string is used for mote type name and icon jpg file
   @Override
   public final String getMoteName() {
-    return ("Inga");
+    return "Inga";
   }
   // The returned string is used for firmware file extension
   @Override
