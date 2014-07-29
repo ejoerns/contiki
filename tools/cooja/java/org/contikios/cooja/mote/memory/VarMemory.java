@@ -50,7 +50,7 @@ public class VarMemory extends Memory {
    * @param intf
    */
   public VarMemory(MemoryInterface intf) {
-    super(null); // XXX
+    super(intf);
     memIntf = intf;
   }
 
