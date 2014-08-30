@@ -9,15 +9,13 @@ public class IPHCPacketAnalyzer extends PacketAnalyzer {
   public final static int SICSLOWPAN_UDP_8_BIT_PORT_MIN = 0xF000;
   public final static int SICSLOWPAN_UDP_8_BIT_PORT_MAX = 0xF0FF;   /* F000 + 255 */
 
-  public final static int SICSLOWPAN_DISPATCH_IPV6 = 0x41; /* 01000001 = 65 */
+  public final static int SICSLOWPAN_DISPATCH_IPV6                    = 0x41; /* 01000001 = 65 */
+  public final static int SICSLOWPAN_DISPATCH_HC1                     = 0x42; /* 01000010 = 66 */
+  public final static int SICSLOWPAN_DISPATCH_IPHC                    = 0x60; /* 011xxxxx = ... */
 
-  public final static int SICSLOWPAN_DISPATCH_HC1 = 0x42; /* 01000010 = 66 */
-
-  public final static int SICSLOWPAN_DISPATCH_IPHC = 0x60; /* 011xxxxx = ... */
-
-  public final static int SICSLOWPAN_DISPATCH_FRAG1 = 0xc0; /* 1100= 0xxx */
-
-  public final static int SICSLOWPAN_DISPATCH_FRAGN = 0xe0; /* 1110= 0xxx */
+  public final static int EXT_HDR_HOP_BY_HOP  = 0;
+  public final static int EXT_HDR_ROUTING     = 43;
+  public final static int EXT_HDR_FRAGMENT    = 44;
 
   /*
    * Values of fields within the IPHC encoding first byte
