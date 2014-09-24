@@ -31,6 +31,17 @@
  *
  */
 
+/**
+ * \addtogroup platform
+ * @{
+ *
+ * \defgroup native_platform Native platform
+ *
+ * The cc2538DK is the new platform by Texas Instruments, based on the
+ * cc2530 SoC with an ARM Cortex-M3 core.
+ * @{
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -297,3 +308,6 @@ uip_log(char *m)
   fprintf(stderr, "%s\n", m);
 }
 /*---------------------------------------------------------------------------*/
+/** @} */
+/** @} */
+
