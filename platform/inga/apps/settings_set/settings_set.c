@@ -60,7 +60,7 @@ PROCESS_THREAD(settings_set_process, ev, data)
 #if (APP_SETTINGS_SET == 1)
 
 #ifdef NODE_CONF_ID
-  if (settings_set_uint16(SETTINGS_KEY_PAN_ADDR, (uint16_t) NODE_CONF_ID) == SETTINGS_STATUS_OK) {
+  if (settings_set_uint16(SETTINGS_KEY_PAN_ADDR, (uint16_t) NODE_ID) == SETTINGS_STATUS_OK) {
     uint16_t settings_nodeid = settings_get_uint16(SETTINGS_KEY_PAN_ADDR, 0);
     PRINTF("[APP.settings_set] New PAN Addr:  0x%04X\n", settings_nodeid);
   } else {
@@ -69,7 +69,7 @@ PROCESS_THREAD(settings_set_process, ev, data)
 #endif /* NODE_CONF_ID */
 
 #ifdef RADIO_CONF_PAN_ID
-  if (settings_set_uint16(SETTINGS_KEY_PAN_ID, (uint16_t) RADIO_CONF_PAN_ID) == SETTINGS_STATUS_OK) {
+  if (settings_set_uint16(SETTINGS_KEY_PAN_ID, (uint16_t) RADIO_PAN_ID) == SETTINGS_STATUS_OK) {
     uint16_t settings_panid = settings_get_uint16(SETTINGS_KEY_PAN_ID, 0);
     PRINTF("[APP.settings_set] New PAN ID:   0x%04X\n", settings_panid);
   } else {
@@ -78,7 +78,7 @@ PROCESS_THREAD(settings_set_process, ev, data)
 #endif /* RADIO_CONF_PAN_ID */
 
 #ifdef RADIO_CONF_CHANNEL
-  if (settings_set_uint8(SETTINGS_KEY_CHANNEL, (uint8_t) RADIO_CONF_CHANNEL) == SETTINGS_STATUS_OK) {
+  if (settings_set_uint8(SETTINGS_KEY_CHANNEL, (uint8_t) RADIO_CHANNEL) == SETTINGS_STATUS_OK) {
     uint8_t settings_channel = settings_get_uint8(SETTINGS_KEY_CHANNEL, 0);
     PRINTF("[APP.settings_set] New channel:  0x%02X\n", settings_channel);
   } else {
@@ -87,7 +87,7 @@ PROCESS_THREAD(settings_set_process, ev, data)
 #endif /* RADIO_CONF_CHANNEL */
 
 #ifdef RADIO_CONF_TX_POWER
-  if (settings_set_uint8(SETTINGS_KEY_TXPOWER, (uint8_t) RADIO_CONF_TX_POWER) == SETTINGS_STATUS_OK) {
+  if (settings_set_uint8(SETTINGS_KEY_TXPOWER, (uint8_t) RADIO_TX_POWER) == SETTINGS_STATUS_OK) {
     uint8_t settings_txpower = settings_get_uint8(SETTINGS_KEY_TXPOWER, 0);
     PRINTF("[APP.settings_set] New TX power: 0x%02X\n", settings_txpower);
   } else {
