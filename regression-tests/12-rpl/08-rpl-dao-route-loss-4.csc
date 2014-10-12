@@ -34,7 +34,7 @@ make sender-node.cooja TARGET=cooja</commands>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiRS232</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiBeeper</moteinterface>
       <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
-      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiIPAddress</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiRadio</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiButton</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiPIR</moteinterface>
@@ -59,7 +59,7 @@ make root-node.cooja TARGET=cooja</commands>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiRS232</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiBeeper</moteinterface>
       <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
-      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiIPAddress</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiRadio</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiButton</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiPIR</moteinterface>
@@ -84,7 +84,7 @@ make receiver-node.cooja TARGET=cooja</commands>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiRS232</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiBeeper</moteinterface>
       <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
-      <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiIPAddress</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiRadio</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiButton</moteinterface>
       <moteinterface>org.contikios.cooja.contikimote.interfaces.ContikiPIR</moteinterface>
