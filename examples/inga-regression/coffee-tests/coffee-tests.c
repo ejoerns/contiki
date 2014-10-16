@@ -39,6 +39,7 @@
 
 #include <stdio.h> /* For printf() */
 #include "cfs/coffee/cfs-coffee.h"
+#include "dev/watchdog.h"
 
 TEST_SUITE("coffee-tests");
 

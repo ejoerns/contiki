@@ -1,4 +1,5 @@
 #include "contiki.h"
+#include "dev/watchdog.h"
 #ifdef INGA_REVISION
 #include <util/delay.h>
 #endif
