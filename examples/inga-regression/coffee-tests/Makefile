@@ -2,9 +2,10 @@
 all: coffee-tests
 
 TARGET=inga
-CFS=coffee
 
 PROJECT_SOURCEFILES += ../test.c
+
+MODULES += core/cfs/coffee
 
 CONTIKI = ../../..
 include $(CONTIKI)/Makefile.include
