@@ -69,8 +69,6 @@ PROCESS_THREAD(udp_client_process, ev, data)
 
   TEST_BEGIN("send10x");
 
-  //printf("############################################################\n");
-
   /* NOTE: Use IPv6 address of server here. */
   uip_ip6addr(&ipaddr, 0xfe80, 0x0000, 0x0000, 0x0000, 
       (CONF_DEST_NODE >> 8) | 0x0200 | ((CONF_DEST_NODE & 0xFF) << 8),

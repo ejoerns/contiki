@@ -67,8 +67,6 @@ PROCESS_THREAD(coffee_test_process, ev, data)
   unsigned short now_fine;
   static uint32_t time_start, time_stop;
 
-  printf("###########################################################\n");
-
   PROCESS_BEGIN();
 
   printf("process running\n");

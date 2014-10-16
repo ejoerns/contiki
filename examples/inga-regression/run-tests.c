@@ -41,8 +41,6 @@ PROCESS_THREAD(test_process, ev, data)
 
   cfs_fat_umount_device();
   
-//  printf("#################################################################");
-
   while (1);
 
   PROCESS_END();
