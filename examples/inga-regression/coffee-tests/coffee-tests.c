@@ -38,7 +38,7 @@
 #include "../test.h"
 
 #include <stdio.h> /* For printf() */
-#include "cfs/cfs-coffee.h"
+#include "cfs/coffee/cfs-coffee.h"
 
 TEST_SUITE("coffee-tests");
 
