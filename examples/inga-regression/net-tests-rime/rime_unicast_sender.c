@@ -55,8 +55,8 @@ PROCESS_THREAD(rime_unicast_sender, ev, data)
   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
 
   // set address
-  addr.u8[0] = NET_TEST_CFG_TARGET_NODE_ID & 0xFF;
-  addr.u8[1] = NET_TEST_CFG_TARGET_NODE_ID >> 8;
+  addr.u8[0] = NET_TEST_CFG_TARGET_NODE_ID >> 8;
+  addr.u8[1] = NET_TEST_CFG_TARGET_NODE_ID & 0xFF;
 
   // send 10 messages
   static int8_t idx = 0;
