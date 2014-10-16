@@ -38,20 +38,20 @@ PROCESS_THREAD(settings_test_process, ev, data)
 
   PROCESS_YIELD();
 
-  uint16_t settings_nodeid = settings_get_uint16(SETTINGS_KEY_PAN_ADDR, 0);
-  TEST_EQUALS(settings_nodeid, NODE_CONF_ID);
+  uint16_t settings_panaddr = settings_get_uint16(SETTINGS_KEY_PAN_ADDR, 0);
+  TEST_EQUALS(settings_panaddr, INGA_CONF_PAN_ADDR);
 
   uint16_t settings_panid = settings_get_uint16(SETTINGS_KEY_PAN_ID, 0);
-  TEST_EQUALS(settings_panid, RADIO_CONF_PAN_ID);
+  TEST_EQUALS(settings_panid, INGA_CONF_PAN_ID);
 
   uint8_t settings_channel = settings_get_uint8(SETTINGS_KEY_CHANNEL, 0);
-  TEST_EQUALS(settings_channel, RADIO_CONF_CHANNEL);
+  TEST_EQUALS(settings_channel, INGA_CONF_RADIO_CHANNEL);
 
   uint8_t settings_txpower = settings_get_uint8(SETTINGS_KEY_TXPOWER, 0);
-  TEST_EQUALS(settings_txpower, RADIO_CONF_TX_POWER);
+  TEST_EQUALS(settings_txpower, INGA_CONF_RADIO_TX_POWER);
 
   uint8_t settings_eui64[8];
-  uint8_t compare_eui64[8] = {NODE_CONF_EUI64};
+  uint8_t compare_eui64[8] = {INGA_CONF_EUI64};
   settings_get(SETTINGS_KEY_EUI64, 0, settings_eui64, sizeof (settings_eui64));
   TEST_EQUALS(settings_eui64[0], compare_eui64[0]);
   TEST_EQUALS(settings_eui64[1], compare_eui64[1]);
