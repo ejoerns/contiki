@@ -9,7 +9,7 @@
 
 TEST_SUITE("settings test");
 /*---------------------------------------------------------------------------*/
-PROCESS(settings_test_process, "UDP client process");
+PROCESS(settings_test_process, "Settings test process");
 AUTOSTART_PROCESSES(&settings_test_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(settings_test_process, ev, data)

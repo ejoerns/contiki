@@ -1,6 +1,7 @@
-# RIME unicast test
-alltests: udp_ipv6_client udp_ipv6_server
-	
+# Settings Test
+
+alltests: settings-test
+
 TARGET=inga
 
 UIP_CONF_IPV6=1

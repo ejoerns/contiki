@@ -1,36 +1,37 @@
 INGA regression tests
 ===
 
-Manual call:
+Contiki-INGA comes with a test suite located under `/tools/profiling/test` that can be used to perform hardware regression tests on real INGA nodes.
 
-    ./tools/profiling/test/test.py -n examples/inga_tests/node_config.yaml -t examples/inga_tests/sensor-tests/test_config.yaml
+Execution of all regression tests:
 
-Each subfolder contains collection of tests for a specific domain.
+    ./tools/profiling/test/test.py -s examples/inga-regression/suite_config.yaml -n examples/inga-regression/node_config.yaml -t examples/inga-regression/sensor-tests/test_config.yaml
 
-coffee-tests
+Test Folders
 ---
-Tests for the COFFEE file system driver
+
+Each subfolder contains collection of tests for a specific domain:
+
+* `coffee-tests`
+  
+  Tests for the COFFEE file system driver
 
 
-fat-tests
----
-Tests for the FAT file system driver
+* `fat-tests`
 
+  Tests for the FAT file system driver
 
-net-tests
----
-Tests for network stacks like RIME, UDP, TCP
+* `net-tests`
 
+  Tests for network stacks like RIME, UDP, TCP
 
-sensor-tests
----
-Tests for the INGA sensor drivers
+* `sensor-tests`
 
+  Tests for the INGA sensor drivers
 
-timer-tests
----
-Tests for contiki timers (etimer, rtimer, ...)
+* `timer-tests`
 
+  Tests for contiki timers (etimer, rtimer, ...)
 
 
 Naming convention
